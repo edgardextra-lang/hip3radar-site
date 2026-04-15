@@ -547,7 +547,6 @@ curl <span class="acc" id="api-url-dex">https://.../hip3radar/api/dex/xyz</span>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
 const RADAR_BASE = "";  // relative — served from same origin (hip3radar.xyz)
@@ -599,13 +598,9 @@ setInterval(loadLiveStats, 30000);
   var SUPABASE_KEY = 'sb_publishable_adcjSKP2wtoVXDt0l5mhnw_AoFpBgoa';
   var SUPABASE_TABLE = 'hip3radar_waitlist';
 
-  var EJS_PUBLIC = 'xvU-bDvFODza5Jr75';
-  var EJS_SERVICE = 'service_8q8xyxn';
-  var EJS_TEMPLATE = 'template_zd3ajde';
-
-  if (window.emailjs && typeof emailjs.init === 'function') {
-    try { emailjs.init({ publicKey: EJS_PUBLIC }); } catch(e){}
-  }
+  // Email delivery goes through our own Flask proxy at /api/waitlist/send.
+  // The proxy calls Resend server-side using a secret key never exposed to the browser.
+  var WAITLIST_SEND_URL = '/api/waitlist/send';
 
   var PLAN_LABELS = {
     general: '',
@@ -708,16 +703,24 @@ setInterval(loadLiveStats, 30000);
       return;
     }
 
-    if (window.emailjs && typeof emailjs.send === 'function' && EJS_TEMPLATE) {
-      try {
-        await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, {
-          to_email: email,
-          plan_label: planLabel || 'HIP3Radar Waitlist',
-          plan_key: currentPlan
-        }, EJS_PUBLIC);
-      } catch (e) {
-        console.warn('EmailJS error:', e);
+    try {
+      var sendResp = await fetch(WAITLIST_SEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          plan: currentPlan,
+          plan_label: planLabel || 'HIP3Radar Waitlist'
+        })
+      });
+      if (!sendResp.ok) {
+        var errBody = {};
+        try { errBody = await sendResp.json(); } catch(_){}
+        console.warn('Waitlist send failed:', sendResp.status, errBody);
       }
+    } catch (e) {
+      // Non-fatal — Supabase already has the row, confirmation email is best-effort
+      console.warn('Waitlist send error:', e);
     }
 
     document.getElementById('wl-form-view').style.display = 'none';
