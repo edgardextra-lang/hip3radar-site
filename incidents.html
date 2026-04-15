@@ -8,9 +8,10 @@
 <meta property="og:title" content="HIP3Radar Incidents — JELLY replay and the full HL manipulation archive">
 <meta property="og:description" content="Watch JELLY unfold second-by-second. HIP3Radar would have crossed critical 2 hours before HLP took the loss.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://edgardextra-lang.github.io/hip3radar-site/incidents.html">
+<meta property="og:url" content="https://hip3radar.xyz/incidents">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff3b6b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%230a0e1a'/%3E%3C/svg%3E">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root {
@@ -121,15 +122,15 @@
 <body>
 
 <nav class="nav">
-  <a href="/hip3radar-site/" class="brand">
+  <a href="/" class="brand">
     <div class="logo"></div>
     <strong>HIP3Radar</strong>
   </a>
   <div class="nav-links">
-    <a href="/hip3radar-site/">Home</a>
-    <a href="/hip3radar-site/#features">Features</a>
-    <a href="/hip3radar-site/#api">API</a>
-    <a id="nav-cta" class="btn" href="#" target="_blank" rel="noopener">Live radar →</a>
+    <a href="/">Home</a>
+    <a href="/#features">Features</a>
+    <a href="/#api">API</a>
+    <a id="nav-cta" class="btn" href="/hip3radar/" target="_blank" rel="noopener">Live radar →</a>
   </div>
 </nav>
 
@@ -147,13 +148,12 @@
 
 <footer class="site">
   <div>HIP3Radar &middot; independent infrastructure for the Hyperliquid ecosystem &middot;
-    <a href="/hip3radar-site/" style="color:var(--text-2);">← back to home</a>
+    <a href="/" style="color:var(--text-2);">← back to home</a>
   </div>
 </footer>
 
 <script>
-const RADAR_BASE = "https://hip3radar.xyz";
-document.getElementById("nav-cta").href = RADAR_BASE + "/hip3radar/";
+const RADAR_BASE = "";  // relative — served same-origin
 
 const fmt = {
   int: (v) => v == null ? "—" : Number(v).toLocaleString("en-US"),
