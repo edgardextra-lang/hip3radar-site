@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Incidents — HIP3Radar</title>
+<meta name="description" content="Every Hyperliquid perp manipulation event, replayed minute-by-minute with HIP3Radar's risk score. Starting with JELLY March 2025.">
+<meta property="og:title" content="HIP3Radar Incidents — JELLY replay and the full HL manipulation archive">
+<meta property="og:description" content="Watch JELLY unfold second-by-second. HIP3Radar would have crossed critical 2 hours before HLP took the loss.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edgardextra-lang.github.io/hip3radar-site/incidents.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff3b6b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%230a0e1a'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0e1a; --bg-2: #0f1524; --panel: #141c30; --panel-2: #1a2340;
+    --border: #1f2a44; --border-2: #2a3655;
+    --text: #e6edf7; --text-2: #8892a8; --text-3: #5a6380;
+    --accent: #ff3b6b; --accent-hover: #ff5580; --accent-dim: rgba(255,59,107,0.12);
+    --ok: #20d97b; --warn: #ffb020; --crit: #ff3b6b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  .nav { position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px; background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .brand { display: flex; align-items: center; gap: 12px; color: var(--text); }
+  .logo { width: 32px; height: 32px; border-radius: 8px;
+    background: radial-gradient(circle at 30% 30%, var(--accent) 0%, #b0154a 60%, #0a0e1a 100%);
+    box-shadow: 0 0 24px rgba(255,59,107,0.45); }
+  .brand strong { font-size: 18px; letter-spacing: -0.3px; font-weight: 800; }
+  .nav-links { display: flex; gap: 24px; align-items: center; font-size: 14px; }
+  .nav-links a { color: var(--text-2); font-weight: 500; }
+  .nav-links a:hover { color: var(--text); }
+  .btn { display: inline-block; padding: 10px 20px;
+    background: var(--accent); color: white !important; border-radius: 8px;
+    font-weight: 700; font-size: 14px; transition: transform 0.15s, background 0.15s;
+    border: none; cursor: pointer; }
+  .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; border: 1px solid var(--border-2); color: var(--text) !important; }
+  .btn.ghost:hover { background: var(--panel); }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 56px 28px; }
+  .eyebrow { display: inline-block; padding: 6px 14px; border-radius: 999px;
+    background: var(--accent-dim); border: 1px solid rgba(255,59,107,0.3);
+    color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; margin-bottom: 20px; }
+  h1 { font-size: clamp(32px, 5vw, 52px); margin: 0 0 16px;
+    line-height: 1.05; letter-spacing: -1.2px; font-weight: 800; }
+  .lead { font-size: 18px; color: var(--text-2); max-width: 720px; margin: 0 0 40px; }
+
+  .incident-list { display: grid; gap: 16px; margin-bottom: 56px; }
+  .incident-card { display: flex; justify-content: space-between; align-items: center;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 22px 26px; cursor: pointer; transition: all 0.15s; flex-wrap: wrap; gap: 12px; }
+  .incident-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .incident-card.active { border-color: var(--accent); background: var(--panel-2); }
+  .incident-meta strong { font-size: 17px; font-weight: 800; }
+  .incident-meta .sub { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+  .incident-score { font-size: 28px; font-weight: 900; color: var(--accent);
+    font-variant-numeric: tabular-nums; }
+  .incident-score .label { display: block; font-size: 10px; color: var(--text-2);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .panel { background: var(--panel); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+  .panel h2 { margin: 0 0 14px; font-size: 24px; letter-spacing: -0.5px; }
+  .panel p.sub { color: var(--text-2); font-size: 15px; margin: 0 0 20px; }
+
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin-bottom: 24px; }
+  .metric { background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; }
+  .metric .label { font-size: 11px; color: var(--text-2); text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600; margin-bottom: 4px; }
+  .metric .val { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .metric .val.accent { color: var(--accent); }
+  .metric .val.warn { color: var(--warn); }
+
+  .chart-wrap { background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .chart-wrap h3 { margin: 0 0 16px; font-size: 15px; font-weight: 700;
+    color: var(--text-2); text-transform: uppercase; letter-spacing: 0.8px; }
+  .chart-container { position: relative; height: 320px; }
+
+  .signals { list-style: none; padding: 0; margin: 0; }
+  .signals li { padding: 12px 0; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 12px; color: var(--text); font-size: 14px; }
+  .signals li:last-child { border-bottom: none; }
+  .signals li::before { content: "→"; color: var(--accent); font-weight: 800; font-size: 18px; }
+
+  .sources { display: grid; gap: 8px; margin-top: 12px; }
+  .sources a { display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-size: 13px; }
+  .sources a:hover { border-color: var(--accent); }
+  .sources a::after { content: "↗"; color: var(--text-2); }
+
+  .note { background: var(--bg-2); border-left: 3px solid var(--warn);
+    padding: 14px 18px; border-radius: 8px; font-size: 13px; color: var(--text-2);
+    margin-top: 16px; }
+
+  footer.site { padding: 40px 28px; text-align: center; color: var(--text-3);
+    font-size: 13px; border-top: 1px solid var(--border); margin-top: 56px; }
+
+  @media (max-width: 680px) {
+    .nav { padding: 12px 16px; }
+    .nav-links a:not(.btn) { display: none; }
+    .wrap { padding: 40px 20px; }
+    .panel { padding: 24px 20px; }
+    .chart-container { height: 260px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/hip3radar-site/" class="brand">
+    <div class="logo"></div>
+    <strong>HIP3Radar</strong>
+  </a>
+  <div class="nav-links">
+    <a href="/hip3radar-site/">Home</a>
+    <a href="/hip3radar-site/#features">Features</a>
+    <a href="/hip3radar-site/#api">API</a>
+    <a id="nav-cta" class="btn" href="#" target="_blank" rel="noopener">Live radar →</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Incident archive</div>
+  <h1>Every HL manipulation event, replayed.</h1>
+  <p class="lead">
+    This is the historical record of what happens when a Hyperliquid perp market goes wrong — replayed minute-by-minute with HIP3Radar's risk score overlaid. Starting with JELLY (March 2025). Future incidents are auto-captured from live HIP3Radar telemetry.
+  </p>
+
+  <div class="incident-list" id="incident-list"></div>
+
+  <div id="incident-detail"></div>
+</div>
+
+<footer class="site">
+  <div>HIP3Radar &middot; independent infrastructure for the Hyperliquid ecosystem &middot;
+    <a href="/hip3radar-site/" style="color:var(--text-2);">← back to home</a>
+  </div>
+</footer>
+
+<script>
+const RADAR_BASE = "https://competent-beach-notre-meter.trycloudflare.com";
+document.getElementById("nav-cta").href = RADAR_BASE + "/hip3radar/";
+
+const fmt = {
+  int: (v) => v == null ? "—" : Number(v).toLocaleString("en-US"),
+  score: (v) => v == null ? "—" : Number(v).toFixed(1),
+  pct: (v, d=2) => v == null ? "—" : (v > 0 ? "+" : "") + Number(v).toFixed(d) + "%",
+  usd: (v) => {
+    if (v == null) return "—";
+    if (v >= 1e9) return "$" + (v/1e9).toFixed(1) + "B";
+    if (v >= 1e6) return "$" + (v/1e6).toFixed(1) + "M";
+    if (v >= 1e3) return "$" + (v/1e3).toFixed(0) + "K";
+    return "$" + v.toFixed(0);
+  },
+  date: (iso) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString("en-US", {month: "short", day: "numeric", year: "numeric"});
+  },
+  time: (iso) => new Date(iso).toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "UTC"}) + " UTC"
+};
+
+let chartPrice = null, chartRisk = null;
+
+async function loadList() {
+  try {
+    const r = await fetch(RADAR_BASE + "/hip3radar/api/incidents", { cache: "no-store" });
+    const data = await r.json();
+    const list = document.getElementById("incident-list");
+    if (!data.incidents || !data.incidents.length) {
+      list.innerHTML = "<div class='panel'><p class='sub'>No incidents recorded yet. The radar is watching.</p></div>";
+      return;
+    }
+    list.innerHTML = data.incidents.map(inc => `
+      <div class="incident-card" onclick="loadIncident('${inc.slug}')" id="card-${inc.slug}">
+        <div class="incident-meta">
+          <strong>${inc.name}</strong>
+          <div class="sub">${fmt.date(inc.started_at)} · est HLP loss ${fmt.usd(inc.estimated_hlp_loss_usd)}</div>
+        </div>
+        <div class="incident-score">
+          <span class="label">Peak risk</span>
+          ${fmt.score(inc.peak_risk_score)}
+        </div>
+      </div>
+    `).join("");
+    // Auto-load the first incident
+    if (data.incidents[0]) loadIncident(data.incidents[0].slug);
+  } catch (e) {
+    document.getElementById("incident-list").innerHTML =
+      "<div class='panel'><p class='sub'>Could not load incidents. Radar API unreachable.</p></div>";
+  }
+}
+
+async function loadIncident(slug) {
+  document.querySelectorAll(".incident-card").forEach(c => c.classList.remove("active"));
+  const card = document.getElementById("card-" + slug);
+  if (card) card.classList.add("active");
+
+  try {
+    const r = await fetch(RADAR_BASE + "/hip3radar/api/incidents/" + slug, { cache: "no-store" });
+    const inc = await r.json();
+    renderIncident(inc);
+  } catch (e) {
+    document.getElementById("incident-detail").innerHTML =
+      "<div class='panel'><p class='sub'>Could not load incident.</p></div>";
+  }
+}
+
+function renderIncident(inc) {
+  const detail = document.getElementById("incident-detail");
+  const signalsHtml = (inc.what_hip3radar_would_have_caught || [])
+    .map(s => `<li>${s}</li>`).join("");
+  const sourcesHtml = (inc.sources || [])
+    .map(s => `<a href="${s.url}" target="_blank" rel="noopener">${s.title}</a>`).join("");
+
+  detail.innerHTML = `
+    <div class="panel">
+      <h2>${inc.name}</h2>
+      <p class="sub">${inc.headline || ""}</p>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">Peak risk score</div>
+          <div class="val accent">${fmt.score(inc.peak_risk_score)}</div>
+        </div>
+        <div class="metric">
+          <div class="label">Peak mark-oracle</div>
+          <div class="val warn">${fmt.pct(inc.peak_mark_oracle_spread_pct)}</div>
+        </div>
+        <div class="metric">
+          <div class="label">Peak oracle drift</div>
+          <div class="val warn">${fmt.pct(inc.peak_oracle_drift_pct)}</div>
+        </div>
+        <div class="metric">
+          <div class="label">Peak OI velocity 1h</div>
+          <div class="val warn">${fmt.pct(inc.peak_oi_velocity_1h, 0)}</div>
+        </div>
+        <div class="metric">
+          <div class="label">HLP est. loss</div>
+          <div class="val">${fmt.usd(inc.estimated_hlp_loss_usd)}</div>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <h3>Risk score timeline</h3>
+        <div class="chart-container"><canvas id="chart-risk"></canvas></div>
+      </div>
+
+      <div class="chart-wrap">
+        <h3>Oracle vs mark price</h3>
+        <div class="chart-container"><canvas id="chart-price"></canvas></div>
+      </div>
+
+      <h3 style="margin-top:32px; margin-bottom:8px; font-size:17px;">What HIP3Radar would have caught</h3>
+      <ul class="signals">${signalsHtml}</ul>
+
+      ${inc.note ? `<div class="note"><strong>Note:</strong> ${inc.note}</div>` : ""}
+
+      <h3 style="margin-top:32px; margin-bottom:8px; font-size:17px;">Sources</h3>
+      <div class="sources">${sourcesHtml}</div>
+    </div>
+  `;
+
+  drawCharts(inc);
+}
+
+function drawCharts(inc) {
+  const labels = inc.series.map(p => fmt.time(p.ts));
+  const riskData = inc.series.map(p => p.risk_score);
+  const markData = inc.series.map(p => p.mark_px);
+  const oracleData = inc.series.map(p => p.oracle_px);
+
+  const commonOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { labels: { color: "#8892a8", font: { size: 11 } } },
+      tooltip: { backgroundColor: "#0f1524", borderColor: "#1f2a44", borderWidth: 1,
+        titleColor: "#e6edf7", bodyColor: "#e6edf7" }
+    },
+    scales: {
+      x: { ticks: { color: "#5a6380", maxRotation: 0, font: { size: 10 } },
+           grid: { color: "rgba(31,42,68,0.5)" } },
+      y: { ticks: { color: "#5a6380", font: { size: 10 } },
+           grid: { color: "rgba(31,42,68,0.5)" } }
+    }
+  };
+
+  if (chartRisk) chartRisk.destroy();
+  const ctx1 = document.getElementById("chart-risk").getContext("2d");
+  chartRisk = new Chart(ctx1, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        { label: "Risk score", data: riskData,
+          borderColor: "#ff3b6b", backgroundColor: "rgba(255,59,107,0.15)",
+          borderWidth: 2.5, fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 5 }
+      ]
+    },
+    options: {
+      ...commonOpts,
+      plugins: { ...commonOpts.plugins,
+        annotation: undefined
+      },
+      scales: {
+        ...commonOpts.scales,
+        y: { ...commonOpts.scales.y, min: 0, max: 100,
+          ticks: { color: "#5a6380", font: { size: 10 },
+            callback: v => v + " /100" } }
+      }
+    }
+  });
+
+  if (chartPrice) chartPrice.destroy();
+  const ctx2 = document.getElementById("chart-price").getContext("2d");
+  chartPrice = new Chart(ctx2, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        { label: "HL oracle", data: oracleData, borderColor: "#ffb020",
+          borderWidth: 2, fill: false, tension: 0.35, pointRadius: 0, pointHoverRadius: 4 },
+        { label: "HL mark", data: markData, borderColor: "#ff3b6b",
+          borderWidth: 2, fill: false, tension: 0.35, pointRadius: 0, pointHoverRadius: 4 }
+      ]
+    },
+    options: commonOpts
+  });
+}
+
+loadList();
+</script>
+</body>
+</html>
