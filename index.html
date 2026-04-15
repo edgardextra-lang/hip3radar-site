@@ -185,6 +185,117 @@
   .api-box .hl { color: var(--ok); }
   .api-box .acc { color: var(--accent); }
 
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-top: 40px; align-items: start; }
+  .price-card { position: relative;
+    background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+  .price-card:hover { transform: translateY(-3px); border-color: var(--border-2); }
+  .price-card.popular { border-color: rgba(255,59,107,0.45);
+    box-shadow: 0 0 40px -8px rgba(255,59,107,0.35); transform: scale(1.02); }
+  .price-card.popular:hover { transform: scale(1.02) translateY(-3px); }
+  .popular-badge { position: absolute; top: -12px; left: 50%;
+    transform: translateX(-50%); padding: 5px 14px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent) 0%, #ffb020 100%);
+    color: white; font-size: 10px; font-weight: 800; letter-spacing: 1px;
+    text-transform: uppercase; }
+  .tier-name { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+  .tier-desc { font-size: 13px; color: var(--text-2); margin-top: 4px;
+    margin-bottom: 20px; }
+  .price { font-size: 42px; font-weight: 900; letter-spacing: -1px;
+    font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+  .price .dollar { font-size: 22px; vertical-align: top; line-height: 1.6;
+    color: var(--text-2); margin-right: 2px; }
+  .price .period { font-size: 15px; color: var(--text-2); font-weight: 600; }
+  .price .range { font-size: 26px; }
+  .features-list { list-style: none; padding: 0; margin: 22px 0 26px; }
+  .features-list li { padding: 8px 0; font-size: 14px; color: var(--text);
+    display: flex; align-items: flex-start; gap: 10px; }
+  .features-list .check { color: var(--ok); font-weight: 800; flex-shrink: 0;
+    margin-top: 1px; }
+  .price-btn { display: block; width: 100%; text-align: center; padding: 13px 0;
+    border-radius: 10px; font-weight: 700; font-size: 14px; border: none;
+    background: var(--accent); color: white; cursor: pointer;
+    transition: background 0.15s, transform 0.15s; font-family: inherit; }
+  .price-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .price-card:not(.popular) .price-btn { background: transparent;
+    border: 1px solid var(--border-2); color: var(--text); }
+  .price-card:not(.popular) .price-btn:hover { background: var(--panel);
+    border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 960px) {
+    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; margin: 40px auto 0; }
+    .price-card.popular { transform: none; }
+    .price-card.popular:hover { transform: translateY(-3px); }
+  }
+
+  /* Waitlist modal */
+  .wl-overlay { position: fixed; inset: 0; background: rgba(5,8,16,0.85);
+    backdrop-filter: blur(8px); display: none; align-items: center;
+    justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.25s; }
+  .wl-overlay.show { display: flex; opacity: 1; }
+  .wl-modal { width: min(460px, calc(100% - 32px));
+    background: linear-gradient(180deg, var(--panel) 0%, #0a0e1a 100%);
+    border: 1px solid rgba(255,59,107,0.3); border-radius: 16px;
+    box-shadow: 0 20px 60px -20px rgba(255,59,107,0.45),
+                0 8px 24px rgba(0,0,0,0.6);
+    padding: 32px 30px 26px; position: relative;
+    transform: translateY(14px) scale(0.97); transition: transform 0.25s; }
+  .wl-overlay.show .wl-modal { transform: translateY(0) scale(1); }
+  .wl-close { position: absolute; top: 14px; right: 14px; width: 32px;
+    height: 32px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; color: var(--text-2); font-size: 18px; line-height: 1;
+    cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .wl-close:hover { background: rgba(255,59,107,0.12); color: var(--accent);
+    border-color: rgba(255,59,107,0.35); }
+  .wl-badge { display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+    background: rgba(255,59,107,0.1); border: 1px solid rgba(255,59,107,0.3);
+    padding: 5px 10px; border-radius: 999px; margin-bottom: 14px; }
+  .wl-badge .dot { width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .wl-title { font-size: 22px; font-weight: 800; color: var(--text);
+    line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.4px; }
+  .wl-sub { font-size: 13px; color: var(--text-2); line-height: 1.55;
+    margin: 0 0 22px; }
+  .wl-sub .plan-chip { display: inline-block; padding: 2px 8px;
+    border-radius: 6px; margin-left: 4px; font-size: 11px; font-weight: 700;
+    background: rgba(255,59,107,0.14); color: var(--accent);
+    border: 1px solid rgba(255,59,107,0.3); }
+  .wl-input { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+    font-size: 14px; color: var(--text); font-family: inherit;
+    transition: border-color 0.15s, background 0.15s; }
+  .wl-input::placeholder { color: var(--text-3); }
+  .wl-input:focus { outline: none; border-color: rgba(255,59,107,0.6);
+    background: rgba(255,59,107,0.05); }
+  .wl-submit { width: 100%; margin-top: 12px; padding: 14px 18px;
+    background: linear-gradient(135deg, var(--accent) 0%, #ff5580 100%);
+    color: white; font-weight: 800; font-size: 14px;
+    border: none; border-radius: 10px; cursor: pointer;
+    box-shadow: 0 8px 24px -10px rgba(255,59,107,0.75);
+    transition: filter 0.15s, transform 0.12s; font-family: inherit; }
+  .wl-submit:hover { filter: brightness(1.08); }
+  .wl-submit:active { transform: translateY(1px); }
+  .wl-submit:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(0.2); }
+  .wl-note { font-size: 11px; color: var(--text-3); text-align: center;
+    margin-top: 14px; line-height: 1.5; }
+  .wl-error { color: #ef4444; font-size: 12px; margin-top: 8px; min-height: 14px; }
+  .wl-success { display: none; text-align: center; padding: 14px 0 6px; }
+  .wl-success.show { display: block; }
+  .wl-check { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 14px;
+    background: rgba(32,217,123,0.15); border: 1.5px solid rgba(32,217,123,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: var(--ok);
+    animation: wl-pop 0.4s cubic-bezier(0.2, 1.4, 0.4, 1); }
+  @keyframes wl-pop { 0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; } }
+  .wl-success-title { font-size: 19px; font-weight: 800; color: var(--text); margin: 0 0 6px; }
+  .wl-success-sub { font-size: 13px; color: var(--text-2); line-height: 1.55; margin: 0; }
+
   footer.site { padding: 48px 28px 80px; text-align: center;
     color: var(--text-3); font-size: 13px; border-top: 1px solid var(--border); }
   footer.site a { color: var(--text-2); }
@@ -213,6 +324,7 @@
     <a href="#features">Features</a>
     <a href="/incidents">Incidents</a>
     <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
     <a href="#api">API</a>
     <a id="nav-cta" class="btn" href="#" target="_blank" rel="noopener">Open Radar →</a>
   </div>
@@ -333,6 +445,59 @@
   </div>
 </section>
 
+<section id="pricing">
+  <h2>Pricing</h2>
+  <p class="sub">The public radar is free forever. Paid tiers unlock alerts, custom signals, and dedicated infrastructure for bot operators, desks, and HIP-3 deployers who need to know 3 hours before JELLY instead of 3 hours after.</p>
+
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="tier-name">Pro</div>
+      <div class="tier-desc">For individual bot operators</div>
+      <div class="price"><span class="dollar">$</span>29<span class="period">/mo</span></div>
+      <ul class="features-list">
+        <li><span class="check">✓</span> Unlimited webhook alerts</li>
+        <li><span class="check">✓</span> Telegram / Discord / Slack delivery</li>
+        <li><span class="check">✓</span> Per-market custom thresholds</li>
+        <li><span class="check">✓</span> Priority latency (sub-30s)</li>
+        <li><span class="check">✓</span> Full historical API access</li>
+        <li><span class="check">✓</span> Email support</li>
+      </ul>
+      <button class="price-btn" onclick="openWaitlistModal('pro')">Join waitlist →</button>
+    </div>
+
+    <div class="price-card popular">
+      <div class="popular-badge">Most popular</div>
+      <div class="tier-name">Team</div>
+      <div class="tier-desc">For prop desks &amp; trading teams</div>
+      <div class="price"><span class="dollar">$</span>199<span class="period">/mo</span></div>
+      <ul class="features-list">
+        <li><span class="check">✓</span> Everything in Pro</li>
+        <li><span class="check">✓</span> Multi-user (up to 10 seats)</li>
+        <li><span class="check">✓</span> 99.9% uptime SLA</li>
+        <li><span class="check">✓</span> Priority email support</li>
+        <li><span class="check">✓</span> Custom signals &amp; alert logic</li>
+        <li><span class="check">✓</span> Private / permissioned markets</li>
+      </ul>
+      <button class="price-btn" onclick="openWaitlistModal('team')">Join waitlist →</button>
+    </div>
+
+    <div class="price-card">
+      <div class="tier-name">Enterprise</div>
+      <div class="tier-desc">For HIP-3 deployers &amp; funds</div>
+      <div class="price"><span class="dollar">$</span><span class="range">2k–10k</span><span class="period">/mo</span></div>
+      <ul class="features-list">
+        <li><span class="check">✓</span> Everything in Team</li>
+        <li><span class="check">✓</span> Dedicated infrastructure</li>
+        <li><span class="check">✓</span> Custom oracle sources &amp; feeds</li>
+        <li><span class="check">✓</span> Custom dashboards &amp; white-label</li>
+        <li><span class="check">✓</span> On-prem / self-hosted option</li>
+        <li><span class="check">✓</span> Dedicated Slack &amp; on-call</li>
+      </ul>
+      <button class="price-btn" onclick="openWaitlistModal('enterprise')">Join waitlist →</button>
+    </div>
+  </div>
+</section>
+
 <section id="api">
   <h2>Free JSON API</h2>
   <p class="sub">CORS-enabled. No key. No rate limit beyond sane use. If you run a bot on HL, plug this into your risk layer.</p>
@@ -360,6 +525,29 @@ curl <span class="acc" id="api-url-dex">https://.../hip3radar/api/dex/xyz</span>
     Data is provided as-is for informational purposes only. Risk scores are derived from public market data and are not financial advice. Absence of a signal does not guarantee safety. Always do your own research.
   </p>
 </footer>
+
+<!-- Waitlist Modal -->
+<div id="wl-overlay" class="wl-overlay">
+  <div class="wl-modal">
+    <button class="wl-close" onclick="closeWaitlistModal()" aria-label="Close">✕</button>
+    <div id="wl-form-view">
+      <div class="wl-badge"><span class="dot"></span> Public beta</div>
+      <h3 class="wl-title">HIP3Radar Waitlist</h3>
+      <p class="wl-sub">Get early access<span id="wl-plan-chip"></span></p>
+      <input type="email" id="wl-email" class="wl-input" placeholder="you@example.com" autocomplete="email">
+      <button id="wl-submit-btn" class="wl-submit" onclick="submitWaitlist()">Join waitlist →</button>
+      <div id="wl-error" class="wl-error"></div>
+      <p class="wl-note">No spam. We'll only email you about HIP3Radar access and major incidents.</p>
+    </div>
+    <div id="wl-success-view" class="wl-success">
+      <div class="wl-check">✓</div>
+      <h4 class="wl-success-title">You're on the list.</h4>
+      <p class="wl-success-sub">A confirmation email is on its way. We'll reach out when your HIP3Radar access opens.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
 const RADAR_BASE = "";  // relative — served from same origin (hip3radar.xyz)
@@ -398,6 +586,150 @@ async function loadLiveStats() {
 }
 loadLiveStats();
 setInterval(loadLiveStats, 30000);
+</script>
+
+<script>
+/* ============================================================
+   HIP3Radar Waitlist — Supabase + EmailJS
+   TODO: swap SUPABASE_URL and SUPABASE_KEY with the new project
+   credentials before going public.
+   ============================================================ */
+(function(){
+  var SUPABASE_URL = 'https://REPLACE_ME.supabase.co';
+  var SUPABASE_KEY = 'REPLACE_ME_ANON_KEY';
+  var SUPABASE_TABLE = 'hip3radar_waitlist';
+
+  var EJS_PUBLIC = 'jc1UmY3TfWj2x66qG';
+  var EJS_SERVICE = 'service_hr2mfry';
+  var EJS_TEMPLATE = 'template_e75us7h';
+
+  if (window.emailjs && typeof emailjs.init === 'function') {
+    try { emailjs.init({ publicKey: EJS_PUBLIC }); } catch(e){}
+  }
+
+  var PLAN_LABELS = {
+    general: '',
+    pro: 'Pro ($29/mo)',
+    team: 'Team ($199/mo)',
+    enterprise: 'Enterprise ($2k–10k/mo)'
+  };
+
+  var currentPlan = 'general';
+
+  window.openWaitlistModal = function(plan){
+    currentPlan = plan || 'general';
+    var chip = document.getElementById('wl-plan-chip');
+    if (chip) {
+      var label = PLAN_LABELS[currentPlan] || '';
+      chip.innerHTML = label ? ' · <span class="plan-chip">' + label + '</span>' : '';
+    }
+    var f = document.getElementById('wl-form-view');
+    var s = document.getElementById('wl-success-view');
+    if (f) f.style.display = '';
+    if (s) s.classList.remove('show');
+    var err = document.getElementById('wl-error');
+    if (err) err.textContent = '';
+    var btn = document.getElementById('wl-submit-btn');
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Join waitlist &rarr;'; }
+    var email = document.getElementById('wl-email');
+    if (email) email.value = '';
+    document.getElementById('wl-overlay').classList.add('show');
+    setTimeout(function(){ if (email) email.focus(); }, 150);
+    if (window.umami && typeof umami.track === 'function') {
+      umami.track('waitlist-open', { plan: currentPlan });
+    }
+  };
+
+  window.closeWaitlistModal = function(){
+    document.getElementById('wl-overlay').classList.remove('show');
+  };
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeWaitlistModal();
+  });
+
+  document.getElementById('wl-overlay').addEventListener('click', function(e){
+    if (e.target.id === 'wl-overlay') closeWaitlistModal();
+  });
+
+  window.submitWaitlist = async function(){
+    var emailInput = document.getElementById('wl-email');
+    var errEl = document.getElementById('wl-error');
+    var btn = document.getElementById('wl-submit-btn');
+    var email = (emailInput.value || '').trim().toLowerCase();
+    errEl.textContent = '';
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Joining…';
+
+    var planLabel = PLAN_LABELS[currentPlan] || 'HIP3Radar Waitlist';
+    var callSign = 'HIP3Radar:' + currentPlan;
+
+    var supabaseOk = false;
+    try {
+      var resp = await fetch(SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          email: email,
+          plan: currentPlan,
+          call_sign: callSign,
+          source: 'hip3radar.xyz',
+          created_at: new Date().toISOString()
+        })
+      });
+      supabaseOk = resp.ok;
+      if (!resp.ok) {
+        var txt = await resp.text();
+        if (resp.status === 409 || /duplicate/i.test(txt)) {
+          supabaseOk = true;
+        } else {
+          console.warn('Supabase insert failed:', resp.status, txt);
+        }
+      }
+    } catch (e) {
+      console.warn('Supabase insert error:', e);
+    }
+
+    if (!supabaseOk) {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.innerHTML = 'Join waitlist &rarr;';
+      return;
+    }
+
+    if (window.emailjs && typeof emailjs.send === 'function' && EJS_TEMPLATE) {
+      try {
+        await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, {
+          to_email: email,
+          plan_label: planLabel || 'HIP3Radar Waitlist',
+          plan_key: currentPlan
+        }, EJS_PUBLIC);
+      } catch (e) {
+        console.warn('EmailJS error:', e);
+      }
+    }
+
+    document.getElementById('wl-form-view').style.display = 'none';
+    document.getElementById('wl-success-view').classList.add('show');
+
+    if (window.umami && typeof umami.track === 'function') {
+      umami.track('waitlist-submit', { plan: currentPlan });
+    }
+
+    setTimeout(closeWaitlistModal, 4000);
+  };
+})();
 </script>
 </body>
 </html>
