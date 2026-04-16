@@ -304,6 +304,70 @@
   .wl-success-title { font-size: 19px; font-weight: 800; color: var(--text); margin: 0 0 6px; }
   .wl-success-sub { font-size: 13px; color: var(--text-2); line-height: 1.55; margin: 0; }
 
+  /* Alerts section */
+  .alerts-section { background: linear-gradient(180deg, transparent 0%, rgba(255,59,107,0.04) 100%);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 28px; }
+  .alerts-grid { max-width: 1100px; margin: 0 auto; display: grid;
+    grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .alerts-copy h2 { font-size: clamp(28px, 4vw, 38px); margin: 16px 0 18px;
+    line-height: 1.1; letter-spacing: -1px; font-weight: 800; }
+  .alerts-copy .lead { color: var(--text-2); font-size: 16px; line-height: 1.6;
+    margin-bottom: 24px; }
+  .check-list { list-style: none; padding: 0; margin: 0 0 28px; }
+  .check-list li { display: flex; align-items: flex-start; gap: 12px;
+    padding: 8px 0; font-size: 14px; color: var(--text); line-height: 1.55; }
+  .check-list .ok { color: var(--ok); font-weight: 800; flex-shrink: 0;
+    margin-top: 1px; font-size: 16px; }
+  .alerts-cta { display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; background: var(--accent); color: white;
+    border-radius: 10px; font-weight: 700; font-size: 14px; text-decoration: none;
+    transition: background 0.15s, transform 0.15s;
+    box-shadow: 0 8px 24px -10px rgba(255,59,107,0.6); }
+  .alerts-cta:hover { background: var(--accent-hover); transform: translateY(-1px); color: white; }
+  .alerts-note { color: var(--text-3); font-size: 12px; margin-top: 14px; }
+
+  /* Telegram chat mockup */
+  .tg-frame { background: #17212B; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+    max-width: 420px; margin: 0 auto; }
+  .tg-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+    background: #1c2733; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .tg-avatar { width: 38px; height: 38px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--accent) 0%, #b0154a 60%, #0a0e1a 100%);
+    box-shadow: 0 0 12px rgba(255,59,107,0.4); flex-shrink: 0; }
+  .tg-header-info { flex: 1; min-width: 0; }
+  .tg-header-name { color: #fff; font-weight: 700; font-size: 15px; line-height: 1.2; }
+  .tg-header-status { color: #708499; font-size: 12px; line-height: 1.3; margin-top: 2px; }
+  .tg-header-icon { color: #708499; font-size: 18px; }
+  .tg-body { padding: 18px 14px; min-height: 380px;
+    background: linear-gradient(135deg, #17212B 0%, #1a2530 100%); }
+  .tg-msg { max-width: 86%; background: #182533; color: #e8eef4;
+    border-radius: 12px 12px 12px 4px; padding: 10px 14px;
+    font-size: 13.5px; line-height: 1.5; margin-bottom: 12px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.15); }
+  .tg-msg.alert { background: linear-gradient(135deg, #2a1a26 0%, #1e1620 100%);
+    border-left: 3px solid var(--accent); }
+  .tg-msg b { color: #fff; font-weight: 700; }
+  .tg-msg .tg-link { color: #6ab7ff; }
+  .tg-time { font-size: 10px; color: #708499; margin-left: 8px;
+    float: right; margin-top: 4px; }
+  .tg-buttons { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .tg-btn { background: rgba(106,183,255,0.08); border: 1px solid rgba(106,183,255,0.2);
+    color: #6ab7ff; padding: 8px 12px; border-radius: 8px; font-size: 12.5px;
+    text-align: center; font-weight: 600; }
+  .tg-btn-row { display: flex; gap: 6px; }
+  .tg-btn-row .tg-btn { flex: 1; }
+  .tg-input-area { display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: #1c2733;
+    border-top: 1px solid rgba(255,255,255,0.05); }
+  .tg-input { flex: 1; background: transparent; border: none; color: #708499;
+    font-size: 13px; padding: 4px 0; }
+  .tg-input-icon { color: #708499; font-size: 18px; }
+  @media (max-width: 760px) {
+    .alerts-grid { grid-template-columns: 1fr; gap: 40px; }
+    .alerts-section { padding: 56px 20px; }
+  }
+
   footer.site { padding: 48px 28px 80px; text-align: center;
     color: var(--text-3); font-size: 13px; border-top: 1px solid var(--border); }
   footer.site a { color: var(--text-2); }
@@ -331,6 +395,7 @@
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="/incidents">Incidents</a>
+    <a href="#alerts">Alerts</a>
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
     <a href="#api">API</a>
@@ -422,6 +487,82 @@
     <p class="sub">HIP-3 just unlocked permissionless perp deployment. Every new market is another surface for the same playbook. This radar watches all of them, all the time.</p>
     <div style="margin-top: 28px;">
       <a class="btn" href="/incidents">Watch the JELLY replay →</a>
+    </div>
+  </div>
+</section>
+
+<section id="alerts" class="alerts-section">
+  <div class="alerts-grid">
+    <div class="alerts-copy">
+      <div class="eyebrow"><span class="status-dot"></span> Telegram alerts · live now</div>
+      <h2>Get pinged the moment a market crosses your threshold.</h2>
+      <p class="lead">
+        Watching the dashboard 24/7 isn't realistic. The bot is. Subscribe once on Telegram, set your risk threshold, and get a DM the second any HL or HIP-3 market crosses it. Free during public beta.
+      </p>
+      <ul class="check-list">
+        <li><span class="ok">✓</span> Subscribe in 5 seconds via slash command or inline buttons</li>
+        <li><span class="ok">✓</span> Filter by dex (alert only on Ventuals, only on native HL, etc.)</li>
+        <li><span class="ok">✓</span> Custom thresholds — 40 for early warning, 60 for critical, anything 1–100</li>
+        <li><span class="ok">✓</span> 6h cooldown per market — no alert fatigue, ever</li>
+        <li><span class="ok">✓</span> Multiple subscriptions per user — stack them however you want</li>
+      </ul>
+      <a class="alerts-cta" href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">
+        Subscribe on Telegram →
+      </a>
+      <p class="alerts-note">No signup, no email, no payment. Free during beta — paid tiers later get higher rate limits and webhook delivery to Discord/Slack.</p>
+    </div>
+
+    <div class="alerts-mockup">
+      <div class="tg-frame">
+        <div class="tg-header">
+          <div class="tg-avatar"></div>
+          <div class="tg-header-info">
+            <div class="tg-header-name">HIP3Radar Alerts</div>
+            <div class="tg-header-status">bot · online</div>
+          </div>
+          <div class="tg-header-icon">⋮</div>
+        </div>
+
+        <div class="tg-body">
+          <div class="tg-msg">
+            👋 <b>Welcome to HIP3Radar Alerts</b><br><br>
+            I watch every Hyperliquid perp market — 324 markets across 9 dexes — and DM you when one crosses your risk threshold.
+            <span class="tg-time">14:02</span>
+            <div class="tg-buttons">
+              <div class="tg-btn-row">
+                <div class="tg-btn">⚠️ Warning (40+)</div>
+                <div class="tg-btn">🚨 Critical (60+)</div>
+              </div>
+              <div class="tg-btn-row">
+                <div class="tg-btn">📊 Custom threshold</div>
+                <div class="tg-btn">🎯 Filter by dex</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tg-msg">
+            ✅ Subscription <b>#1</b> active<br><br>
+            You'll be DM'd when any market on <b>all dexes</b> crosses risk score <b>60</b>.
+            <span class="tg-time">14:02</span>
+          </div>
+
+          <div class="tg-msg alert">
+            🚨 <b>vntl:ANTHROPIC</b> crossed your threshold<br>
+            Risk score: <b>87.4</b> / 100  (threshold: 60)<br>
+            Mark-oracle spread: +14.70%<br>
+            Open interest: $4,469,445<br>
+            OI / 24h volume: 12.7x<br><br>
+            <span class="tg-link">Open the live radar →</span>
+            <span class="tg-time">14:47</span>
+          </div>
+        </div>
+
+        <div class="tg-input-area">
+          <div class="tg-input-icon">😊</div>
+          <input class="tg-input" placeholder="Message" disabled>
+          <div class="tg-input-icon">🎤</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
