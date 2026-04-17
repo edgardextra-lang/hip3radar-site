@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ventuals · HIP3Radar Verified — Example</title>
+<meta name="description" content="Example HIP3Radar Verified page. Independent safety attestation with live market scores, signed audit trail, and monthly re-check.">
+<meta property="og:title" content="Ventuals — HIP3Radar Verified">
+<meta property="og:description" content="Independent HIP-3 safety attestation. 4 markets verified safe. Monthly re-audit.">
+<meta property="og:type" content="profile">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2320d97b'/%3E%3Cpath d='M10 16l4 4 8-8' stroke='%230a0e1a' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://hip3radar.xyz">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a; --bg-2: #0f1524; --panel: #141c30; --panel-2: #1a2340;
+    --border: #1f2a44; --border-2: #2a3655;
+    --text: #e6edf7; --text-2: #8892a8; --text-3: #8a95ad;
+    --accent: #ff3b6b; --accent-hover: #ff5580; --accent-dim: rgba(255,59,107,0.12);
+    --ok: #20d97b; --ok-dim: rgba(32,217,123,0.12);
+    --warn: #ffb020; --warn-dim: rgba(255,176,32,0.12);
+    --crit: #ff3b6b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); }
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px;
+    border-radius: 6px; box-shadow: 0 0 0 4px rgba(255,59,107,0.18); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px; background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .brand { display: flex; align-items: center; gap: 12px; color: var(--text); }
+  .brand strong { font-size: 18px; letter-spacing: -0.3px; font-weight: 800; }
+  .logo { width: 32px; height: 32px; border-radius: 8px;
+    background: radial-gradient(circle at 30% 30%, var(--accent) 0%, #b0154a 60%, #0a0e1a 100%);
+    box-shadow: 0 0 24px rgba(255,59,107,0.45); }
+  .nav-links { display: flex; gap: 18px; align-items: center; }
+  .nav-links a { color: var(--text-2); font-size: 14px; font-weight: 500; }
+  .nav-links a:hover { color: var(--text); }
+  .btn { display: inline-flex; align-items: center; justify-content: center;
+    padding: 10px 16px; border-radius: 10px; background: var(--accent); color: white;
+    font-weight: 700; font-size: 14px; cursor: pointer; border: none;
+    font-family: inherit; min-height: 40px; transition: background 0.15s, transform 0.15s; }
+  .btn:hover { background: var(--accent-hover); color: white; transform: translateY(-1px); }
+  .btn.ghost { background: transparent; border: 1px solid var(--border-2); color: var(--text); }
+  .btn.ghost:hover { background: var(--panel); border-color: var(--accent); color: var(--accent); }
+
+  /* DEMO BANNER */
+  .demo-banner { background: rgba(255,176,32,0.08); border-bottom: 1px solid rgba(255,176,32,0.25);
+    padding: 10px 28px; text-align: center; font-size: 12px; color: var(--warn);
+    font-family: "JetBrains Mono", monospace; letter-spacing: 0.04em; }
+
+  /* HEADER */
+  section.header { max-width: 1000px; margin: 0 auto; padding: 56px 28px 32px; }
+  .deployer-row { display: grid; grid-template-columns: 80px 1fr auto;
+    gap: 24px; align-items: center; }
+  .deployer-logo { width: 80px; height: 80px; border-radius: 16px;
+    background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Inter", sans-serif; font-weight: 900; font-size: 36px; color: white;
+    box-shadow: 0 10px 30px rgba(79,70,229,0.35); }
+  .deployer-name { font-size: 32px; font-weight: 800; letter-spacing: -0.6px;
+    margin: 0 0 6px; }
+  .deployer-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--text-3); }
+  .verified-badge { display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ok-dim); border: 1px solid rgba(32,217,123,0.3);
+    color: var(--ok); padding: 8px 14px; border-radius: 100px;
+    font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; }
+  .verified-badge svg { width: 16px; height: 16px; }
+  @media (max-width: 720px) {
+    .deployer-row { grid-template-columns: 64px 1fr; }
+    .deployer-logo { width: 64px; height: 64px; font-size: 28px; }
+    .deployer-name { font-size: 24px; }
+    .verified-badge { grid-column: 1 / -1; justify-self: flex-start; }
+  }
+
+  /* SCORE HERO */
+  .score-hero {
+    background: linear-gradient(135deg, rgba(32,217,123,0.08), rgba(34,211,238,0.05));
+    border: 1px solid rgba(32,217,123,0.18);
+    border-radius: 20px; padding: 36px 32px; margin-top: 32px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 28px; align-items: center;
+  }
+  .score-big { font-family: "JetBrains Mono", monospace;
+    font-size: 96px; font-weight: 700; color: var(--ok); line-height: 1;
+    letter-spacing: -3px; }
+  .score-big .score-suffix { font-size: 28px; color: var(--text-3); }
+  .score-labels h2 { font-size: 22px; font-weight: 800; margin: 0 0 6px;
+    letter-spacing: -0.3px; }
+  .score-labels p { color: var(--text-2); font-size: 14px; margin: 0; line-height: 1.55; }
+  .score-hero .sig-block { text-align: right; font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: var(--text-3); }
+  .score-hero .sig-block strong { display: block; color: var(--text); font-size: 12px;
+    font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .score-hero .sig-block code { display: block; color: var(--text-2);
+    margin: 2px 0; word-break: break-all; max-width: 200px; }
+  @media (max-width: 760px) {
+    .score-hero { grid-template-columns: 1fr; text-align: center; }
+    .score-hero .sig-block { text-align: center; }
+    .score-big { font-size: 72px; }
+  }
+
+  /* SECTIONS */
+  section.sec { max-width: 1000px; margin: 0 auto; padding: 48px 28px; }
+  .sec-header { display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+  .sec-header h2 { font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.3px; }
+  .sec-header .sec-meta { font-family: "JetBrains Mono", monospace; font-size: 12px;
+    color: var(--text-3); }
+
+  /* MARKETS GRID */
+  .markets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .market-card { background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 22px; transition: border-color 0.15s, transform 0.15s; }
+  .market-card:hover { border-color: var(--border-2); transform: translateY(-2px); }
+  .market-row1 { display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 14px; }
+  .market-ticker { font-family: "JetBrains Mono", monospace; font-size: 13px;
+    font-weight: 700; color: var(--text); }
+  .market-dex { font-family: "JetBrains Mono", monospace; font-size: 10px;
+    color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+  .market-score { font-family: "JetBrains Mono", monospace; font-size: 30px;
+    font-weight: 700; letter-spacing: -1px; line-height: 1; }
+  .market-score.ok { color: var(--ok); }
+  .market-score.warn { color: var(--warn); }
+  .market-score.crit { color: var(--crit); }
+  .market-status { display: flex; align-items: center; gap: 6px;
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: var(--text-2); margin-bottom: 12px; }
+  .market-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .market-dot.ok { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .market-dot.warn { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+  .signals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    font-family: "JetBrains Mono", monospace; font-size: 10px; }
+  .signal-tile { background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 8px; }
+  .signal-tile .signal-name { color: var(--text-3); text-transform: uppercase;
+    letter-spacing: 0.06em; font-size: 8.5px; margin-bottom: 2px; }
+  .signal-tile .signal-val { color: var(--text); font-weight: 700; font-size: 11px; }
+
+  /* BADGE EMBED */
+  .embed-box { background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px; }
+  .embed-row { display: grid; grid-template-columns: 1fr auto; gap: 24px;
+    align-items: center; margin-bottom: 16px; }
+  .embed-preview { background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; display: flex; justify-content: center;
+    align-items: center; }
+  .embed-svg {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #1a2340 0%, #141c30 100%);
+    border: 1.5px solid rgba(32,217,123,0.4); border-radius: 100px;
+    padding: 8px 16px;
+    font-family: "Inter", sans-serif; font-weight: 700; font-size: 13px; color: var(--text);
+    box-shadow: 0 8px 24px rgba(32,217,123,0.15);
+  }
+  .embed-svg-mark { width: 18px; height: 18px; border-radius: 50%;
+    background: var(--ok); display: flex; align-items: center; justify-content: center;
+    color: var(--bg); }
+  .embed-svg-mark svg { width: 12px; height: 12px; fill: none;
+    stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .embed-svg .score-num { color: var(--ok); font-family: "JetBrains Mono", monospace; }
+  .code-block { background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; font-family: "JetBrains Mono", monospace;
+    font-size: 12px; color: var(--text-2); overflow-x: auto; line-height: 1.65;
+    position: relative; }
+  .code-block .comment { color: var(--text-3); }
+  .code-block .string { color: var(--accent); }
+  .code-block .attr { color: #22d3ee; }
+  .copy-btn { position: absolute; top: 12px; right: 12px;
+    background: var(--panel); border: 1px solid var(--border-2); color: var(--text-2);
+    font-family: "JetBrains Mono", monospace; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 5px 10px; border-radius: 6px; cursor: pointer;
+    transition: all 0.15s; }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* INCIDENT HISTORY */
+  .incidents-table { background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden; }
+  .incident-row { display: grid; grid-template-columns: 120px 1fr 90px;
+    gap: 16px; padding: 16px 22px; border-bottom: 1px solid var(--border);
+    align-items: center; }
+  .incident-row:last-child { border-bottom: none; }
+  .incident-date { font-family: "JetBrains Mono", monospace; font-size: 12px;
+    color: var(--text-3); }
+  .incident-body { font-size: 14px; color: var(--text); }
+  .incident-body small { display: block; color: var(--text-2); font-size: 12px; margin-top: 2px; }
+  .incident-status { font-family: "JetBrains Mono", monospace; font-size: 10px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 4px 10px; border-radius: 100px; text-align: center; }
+  .incident-status.resolved { background: var(--ok-dim); color: var(--ok);
+    border: 1px solid rgba(32,217,123,0.3); }
+  .empty-state { padding: 48px 22px; text-align: center; color: var(--text-3);
+    font-size: 14px; }
+  .empty-state strong { color: var(--ok); display: block; font-size: 16px; margin-bottom: 4px; }
+
+  /* FOOTER */
+  footer { padding: 40px 28px; text-align: center; color: var(--text-3); font-size: 12px;
+    border-top: 1px solid var(--border); margin-top: 32px; }
+  footer a { color: var(--text-2); margin: 0 10px; }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .nav-links a:not(.btn) { display: none; }
+    .embed-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="brand">
+    <div class="logo"></div>
+    <strong>HIP3Radar</strong>
+  </a>
+  <div class="nav-links">
+    <a href="/#pricing">Pricing</a>
+    <a href="/#api">API</a>
+    <a href="/verify.html">Get verified</a>
+    <a class="btn ghost" href="/">← Main site</a>
+  </div>
+</nav>
+
+<div class="demo-banner">
+  ⚠ This is an EXAMPLE page showing what a Verified deployer's public URL looks like. The data is illustrative.
+</div>
+
+<!-- HEADER -->
+<section class="header">
+  <div class="deployer-row">
+    <div class="deployer-logo">V</div>
+    <div>
+      <h1 class="deployer-name">Ventuals</h1>
+      <div class="deployer-meta">
+        <span>Deployer <code style="color:var(--text);">0x7d3f…a291</code></span>
+        <span>·</span>
+        <span>4 markets</span>
+        <span>·</span>
+        <a href="https://ventuals.com" target="_blank" rel="noopener">ventuals.com ↗</a>
+      </div>
+    </div>
+    <div class="verified-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <polyline points="9 12 11 14 15 10"/>
+      </svg>
+      HIP3Radar Verified
+    </div>
+  </div>
+
+  <!-- SCORE HERO -->
+  <div class="score-hero">
+    <div class="score-big">94<span class="score-suffix">/100</span></div>
+    <div class="score-labels">
+      <h2>Overall safety score</h2>
+      <p>Weighted average of 4 market scores, updated every 60 seconds. Verified status remains active as long as the aggregate stays ≥80 and no single market drops below 70 for more than 72 hours.</p>
+    </div>
+    <div class="sig-block">
+      <strong>Signed</strong>
+      <span>Last audit: 2026-04-12</span>
+      <span>Next re-check: 2026-05-12</span>
+      <code>0xe1d4…8c2f</code>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETS -->
+<section class="sec">
+  <div class="sec-header">
+    <h2>Verified markets</h2>
+    <div class="sec-meta">Last scan · 24s ago</div>
+  </div>
+  <div class="markets-grid">
+
+    <div class="market-card">
+      <div class="market-row1">
+        <div>
+          <div class="market-ticker">ANTHROPIC-PERP</div>
+          <div class="market-dex">vntl · 20x lev</div>
+        </div>
+        <div class="market-score ok">97</div>
+      </div>
+      <div class="market-status">
+        <span class="market-dot ok"></span> All signals nominal · no incidents (180d)
+      </div>
+      <div class="signals-grid">
+        <div class="signal-tile"><div class="signal-name">Oracle drift</div><div class="signal-val">0.12%</div></div>
+        <div class="signal-tile"><div class="signal-name">OI/Vol</div><div class="signal-val">2.1×</div></div>
+        <div class="signal-tile"><div class="signal-name">Funding</div><div class="signal-val">p48</div></div>
+      </div>
+    </div>
+
+    <div class="market-card">
+      <div class="market-row1">
+        <div>
+          <div class="market-ticker">OPENAI-PERP</div>
+          <div class="market-dex">vntl · 20x lev</div>
+        </div>
+        <div class="market-score ok">95</div>
+      </div>
+      <div class="market-status">
+        <span class="market-dot ok"></span> Stable · 1 minor alert cleared (7d)
+      </div>
+      <div class="signals-grid">
+        <div class="signal-tile"><div class="signal-name">Oracle drift</div><div class="signal-val">0.28%</div></div>
+        <div class="signal-tile"><div class="signal-name">OI/Vol</div><div class="signal-val">2.6×</div></div>
+        <div class="signal-tile"><div class="signal-name">Funding</div><div class="signal-val">p62</div></div>
+      </div>
+    </div>
+
+    <div class="market-card">
+      <div class="market-row1">
+        <div>
+          <div class="market-ticker">SPACEX-PERP</div>
+          <div class="market-dex">vntl · 15x lev</div>
+        </div>
+        <div class="market-score ok">93</div>
+      </div>
+      <div class="market-status">
+        <span class="market-dot ok"></span> Strong liquidity · thin-float OK
+      </div>
+      <div class="signals-grid">
+        <div class="signal-tile"><div class="signal-name">Oracle drift</div><div class="signal-val">0.34%</div></div>
+        <div class="signal-tile"><div class="signal-name">OI/Vol</div><div class="signal-val">3.1×</div></div>
+        <div class="signal-tile"><div class="signal-name">Funding</div><div class="signal-val">p55</div></div>
+      </div>
+    </div>
+
+    <div class="market-card">
+      <div class="market-row1">
+        <div>
+          <div class="market-ticker">STRIPE-PERP</div>
+          <div class="market-dex">vntl · 15x lev</div>
+        </div>
+        <div class="market-score warn">82</div>
+      </div>
+      <div class="market-status">
+        <span class="market-dot warn"></span> Funding p89 · monitor for squeeze
+      </div>
+      <div class="signals-grid">
+        <div class="signal-tile"><div class="signal-name">Oracle drift</div><div class="signal-val">0.61%</div></div>
+        <div class="signal-tile"><div class="signal-name">OI/Vol</div><div class="signal-val">4.8×</div></div>
+        <div class="signal-tile" style="border-color: rgba(255,176,32,0.3);"><div class="signal-name">Funding</div><div class="signal-val" style="color: var(--warn);">p89</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BADGE EMBED -->
+<section class="sec">
+  <div class="sec-header">
+    <h2>Badge embed</h2>
+    <div class="sec-meta">Auto-cached · 5 min TTL</div>
+  </div>
+  <div class="embed-box">
+    <div class="embed-row">
+      <div>
+        <p style="margin: 0 0 12px; color: var(--text-2); font-size: 14px;">
+          Drop this one-line HTML on your app's footer, docs, or marketing site. The badge auto-updates and links back to this verification page.
+        </p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode('embed-code')">Copy</button>
+<pre id="embed-code" style="margin:0;font-family:inherit;"><span class="comment">&lt;!-- HIP3Radar Verified badge --&gt;</span>
+<span class="attr">&lt;a</span> <span class="string">href="https://hip3radar.xyz/verified/ventuals"</span> <span class="attr">target=</span><span class="string">"_blank"</span><span class="attr">&gt;</span>
+  <span class="attr">&lt;img</span> <span class="attr">src=</span><span class="string">"https://hip3radar.xyz/badge/ventuals.svg"</span>
+       <span class="attr">alt=</span><span class="string">"HIP3Radar Verified — safety score 94"</span>
+       <span class="attr">height=</span><span class="string">"32"</span><span class="attr">&gt;</span>
+<span class="attr">&lt;/a&gt;</span></pre>
+        </div>
+      </div>
+      <div class="embed-preview">
+        <div class="embed-svg">
+          <span class="embed-svg-mark">
+            <svg viewBox="0 0 24 24"><polyline points="9 12 11 14 15 10"/></svg>
+          </span>
+          HIP3Radar Verified · <span class="score-num">94</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INCIDENT HISTORY -->
+<section class="sec">
+  <div class="sec-header">
+    <h2>Incident history (180 days)</h2>
+    <div class="sec-meta">All resolved · no active issues</div>
+  </div>
+  <div class="incidents-table">
+
+    <div class="incident-row">
+      <div class="incident-date">2026-02-18</div>
+      <div class="incident-body">
+        Funding rate spike on STRIPE-PERP reached p94 for 4h during pre-IPO news surge.
+        <small>Deployer reduced OI cap within 2h of alert. No slashing risk triggered.</small>
+      </div>
+      <div class="incident-status resolved">Resolved</div>
+    </div>
+
+    <div class="incident-row">
+      <div class="incident-date">2026-01-07</div>
+      <div class="incident-body">
+        Brief oracle drift (0.9%) on OPENAI-PERP during Asia early-hours volume dip.
+        <small>Auto-recovered in 11 minutes. Alert sent to deployer ops channel.</small>
+      </div>
+      <div class="incident-status resolved">Resolved</div>
+    </div>
+
+    <div class="incident-row">
+      <div class="incident-date">2025-11-22</div>
+      <div class="incident-body">
+        Pre-verification observation period flagged mark-oracle spread of 2.3% on ANTHROPIC-PERP.
+        <small>Deployer updated oracle-feed staleness threshold. Re-tested and passed.</small>
+      </div>
+      <div class="incident-status resolved">Resolved</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AUDIT TRAIL -->
+<section class="sec">
+  <div class="sec-header">
+    <h2>Audit trail</h2>
+    <div class="sec-meta">Cryptographically signed · on-record</div>
+  </div>
+  <div class="incidents-table">
+    <div class="incident-row">
+      <div class="incident-date">2026-04-12</div>
+      <div class="incident-body">
+        <strong style="color: var(--ok);">Monthly re-verification passed.</strong>
+        <small>Aggregate score 94/100. All 4 markets ≥80. Signed: <code style="color:var(--text-2);">0xe1d4…8c2f</code></small>
+      </div>
+      <div class="incident-status resolved">Signed</div>
+    </div>
+    <div class="incident-row">
+      <div class="incident-date">2026-03-12</div>
+      <div class="incident-body">
+        Monthly re-verification passed.
+        <small>Aggregate score 92/100. Signed: <code style="color:var(--text-2);">0xa7b2…39f1</code></small>
+      </div>
+      <div class="incident-status resolved">Signed</div>
+    </div>
+    <div class="incident-row">
+      <div class="incident-date">2025-12-15</div>
+      <div class="incident-body">
+        <strong style="color: var(--text);">Initial verification issued.</strong>
+        <small>Application · 7d observation · two-way signature. Signed by deployer: <code style="color:var(--text-2);">0x7d3f…a291</code></small>
+      </div>
+      <div class="incident-status resolved">Signed</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<section class="sec" style="text-align: center; padding-top: 20px;">
+  <p style="color: var(--text-2); font-size: 15px; margin-bottom: 16px;">
+    Want a page like this for your markets?
+  </p>
+  <a href="/verify.html" class="btn" style="padding: 12px 28px; font-size: 15px;">
+    Get HIP3Radar Verified →
+  </a>
+</section>
+
+<footer>
+  <div>
+    <a href="/">Home</a> ·
+    <a href="/verify.html">Get verified</a> ·
+    <a href="/#api">API</a> ·
+    <a href="mailto:hello@hip3radar.xyz">hello@hip3radar.xyz</a>
+  </div>
+  <p style="margin-top: 10px;">HIP3Radar is independent infrastructure for the Hyperliquid ecosystem. No affiliation with Hyperliquid Labs. This is an example page with illustrative data.</p>
+</footer>
+
+<script>
+function copyCode(id) {
+  var pre = document.getElementById(id);
+  var text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    var btn = pre.parentElement.querySelector('.copy-btn');
+    var original = btn.textContent;
+    btn.textContent = '✓ Copied';
+    btn.style.color = 'var(--ok)';
+    setTimeout(() => { btn.textContent = original; btn.style.color = ''; }, 1600);
+  });
+}
+</script>
+
+</body>
+</html>

@@ -3,22 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HIP3Radar — Early warning for Hyperliquid perp risk</title>
-<meta name="description" content="Real-time risk surveillance for every Hyperliquid perp market. Oracle drift, mark-oracle spread, OI velocity, and JELLY-style manipulation detection. Free and public.">
-<meta property="og:title" content="HIP3Radar — Hyperliquid perp risk surveillance">
-<meta property="og:description" content="Live risk scoring for every HL + HIP-3 perp market. Built after the JELLY incident so it never happens to your bags again.">
+<title>HIP3Radar — The independent safety score for every Hyperliquid perp</title>
+<meta name="description" content="Every HIP-3 market on Hyperliquid, graded 0–100 on oracle integrity, manipulation exposure, and liquidity. Free scoreboard for traders. Verified badge for deployers who want to prove their markets are safe. API for every HL dashboard.">
+<meta property="og:title" content="HIP3Radar — Every Hyperliquid perp, graded.">
+<meta property="og:description" content="Independent safety scores for 324 markets across 9 dexes. Free for traders. Verified badge for deployers. API for dashboards. Neutral infrastructure for the HL ecosystem.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hip3radar.xyz/">
 <meta property="og:image" content="https://hip3radar.xyz/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="HIP3Radar — Early warning for every Hyperliquid perp. Built after JELLY.">
+<meta property="og:image:alt" content="HIP3Radar — The independent safety score for every Hyperliquid perp.">
 <meta property="og:site_name" content="HIP3Radar">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://hip3radar.xyz/og-image.png">
-<meta name="twitter:title" content="HIP3Radar — Hyperliquid perp risk surveillance">
-<meta name="twitter:description" content="324 markets, 9 dexes, scored every 60 seconds. Free public API. Built after JELLY.">
+<meta name="twitter:title" content="HIP3Radar — Every Hyperliquid perp, graded.">
+<meta name="twitter:description" content="324 markets, 9 dexes. Free safety scores for traders. Verified badge for deployers. API for dashboards. Neutral ecosystem infra.">
 <link rel="preconnect" href="https://hip3radar.xyz">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff3b6b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%230a0e1a'/%3E%3C/svg%3E">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
 <style>
@@ -31,7 +34,7 @@
     --border-2: #2a3655;
     --text: #e6edf7;
     --text-2: #8892a8;
-    --text-3: #5a6380;
+    --text-3: #8a95ad;     /* brightened from #5a6380 for WCAG AA on dark bg */
     --accent: #ff3b6b;
     --accent-hover: #ff5580;
     --accent-dim: rgba(255,59,107,0.12);
@@ -41,10 +44,33 @@
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    font-feature-settings: "cv11", "ss01";   /* Inter: nicer 1/I/l and a */
     -webkit-font-smoothing: antialiased; line-height: 1.5; }
   a { color: var(--accent); text-decoration: none; }
   a:hover { color: var(--accent-hover); }
+
+  /* ─── Accessibility: focus-visible for keyboard navigation ─── */
+  :focus { outline: none; }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 4px rgba(255, 59, 107, 0.18);
+  }
+  button:focus-visible, a:focus-visible, input:focus-visible {
+    outline-offset: 3px;
+  }
+
+  /* ─── Respect prefers-reduced-motion ─── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 
   .nav {
     position: sticky; top: 0; z-index: 50;
@@ -130,9 +156,14 @@
     padding: 28px; transition: border-color 0.2s, transform 0.2s;
   }
   .feature:hover { border-color: var(--border-2); transform: translateY(-2px); }
-  .feature .icon { width: 44px; height: 44px; border-radius: 10px;
+  .feature .icon {
+    width: 44px; height: 44px; border-radius: 10px;
     background: var(--accent-dim); display: flex; align-items: center;
-    justify-content: center; margin-bottom: 16px; font-size: 22px; }
+    justify-content: center; margin-bottom: 16px;
+    color: var(--accent);       /* SVG inherits via stroke="currentColor" */
+  }
+  .feature .icon svg { width: 22px; height: 22px; stroke-width: 2; stroke: currentColor;
+    fill: none; stroke-linecap: round; stroke-linejoin: round; }
   .feature h3 { margin: 0 0 10px; font-size: 18px; font-weight: 700; }
   .feature p { margin: 0; color: var(--text-2); font-size: 14px; line-height: 1.65; }
 
@@ -160,7 +191,7 @@
   .jelly-section {
     background: linear-gradient(180deg, transparent 0%, rgba(255,59,107,0.03) 100%);
     border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-    padding: 80px 28px;
+    padding: 72px 28px;
   }
   .jelly-inner { max-width: 900px; margin: 0 auto; text-align: center; }
   .jelly-inner blockquote {
@@ -217,7 +248,7 @@
   .price .dollar { font-size: 22px; vertical-align: top; line-height: 1.6;
     color: var(--text-2); margin-right: 2px; }
   .price .period { font-size: 15px; color: var(--text-2); font-weight: 600; }
-  .price .range { font-size: 26px; }
+  .price .range { font-size: 42px; letter-spacing: -1px; }
   .features-list { list-style: none; padding: 0; margin: 22px 0 26px; }
   .features-list li { padding: 8px 0; font-size: 14px; color: var(--text);
     display: flex; align-items: flex-start; gap: 10px; }
@@ -306,7 +337,7 @@
 
   /* Alerts section */
   .alerts-section { background: linear-gradient(180deg, transparent 0%, rgba(255,59,107,0.04) 100%);
-    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 28px; }
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 72px 28px; }
   .alerts-grid { max-width: 1100px; margin: 0 auto; display: grid;
     grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
   .alerts-copy h2 { font-size: clamp(28px, 4vw, 38px); margin: 16px 0 18px;
@@ -434,7 +465,7 @@
     .tier-desc { font-size: 12.5px; margin-bottom: 16px; }
     .price { font-size: 36px; }
     .price .dollar { font-size: 18px; }
-    .price .range { font-size: 22px; }
+    .price .range { font-size: 36px; letter-spacing: -0.5px; }
     .features-list li { font-size: 13.5px; padding: 7px 0; }
     .price-btn { padding: 12px 0; font-size: 13.5px; min-height: 44px; }
     /* API box: prevent horizontal overflow on long URLs */
@@ -501,64 +532,136 @@
     <a href="#how">How it works</a>
     <a href="#pricing">Pricing</a>
     <a href="#api">API</a>
-    <a id="nav-cta" class="btn" href="#" target="_blank" rel="noopener">Open Radar →</a>
+    <a id="nav-cta" class="btn" href="#" target="_blank" rel="noopener">Open Scoreboard →</a>
   </div>
 </nav>
 
 <section class="hero">
-  <div class="eyebrow"><span class="status-dot"></span> Live on mainnet · Public beta</div>
-  <h1>Early warning for <span class="gradient">Hyperliquid perp risk</span></h1>
+  <div class="eyebrow"><span class="status-dot"></span> Independent · Neutral · Public</div>
+  <h1>Every Hyperliquid perp, <span class="gradient">graded.</span></h1>
   <p class="lead">
-    Real-time surveillance of every HL native + HIP-3 perp market.
-    Oracle drift, mark-oracle spread, OI velocity, and JELLY-style manipulation patterns —
-    scored live every 30 seconds. Free and public.
+    324 markets across 9 perp dexes, scored 0–100 on oracle integrity, manipulation
+    exposure, and liquidity health — refreshed every 60 seconds. Free scoreboard for
+    traders. Verified badge for deployers. Drop-in API for every Hyperliquid dashboard.
   </p>
   <div class="hero-cta">
-    <a id="hero-cta" class="btn" href="#" target="_blank" rel="noopener">Open live radar →</a>
-    <a class="btn ghost" href="#how">How it works</a>
+    <a id="hero-cta" class="btn" href="#" target="_blank" rel="noopener">Open live scoreboard →</a>
+    <a class="btn ghost" href="#pricing">See pricing</a>
   </div>
 
   <div class="live-stats">
-    <div class="stat-card"><div class="label">Markets surveilled</div><div class="val" id="lv-markets">—</div></div>
-    <div class="stat-card"><div class="label">Perp dexes</div><div class="val" id="lv-dexes">—</div></div>
+    <div class="stat-card"><div class="label">Markets graded</div><div class="val" id="lv-markets">—</div></div>
+    <div class="stat-card"><div class="label">Perp dexes covered</div><div class="val" id="lv-dexes">—</div></div>
     <div class="stat-card accent"><div class="label">Current max risk</div><div class="val" id="lv-risk">—</div></div>
-    <div class="stat-card"><div class="label">Last update</div><div class="val" id="lv-time" style="font-size:18px;">—</div></div>
+    <div class="stat-card"><div class="label">Last scan</div><div class="val" id="lv-time" style="font-size:18px;">—</div></div>
+  </div>
+</section>
+
+<!-- Audience bar: three stakeholders, one score -->
+<section style="padding: 48px 28px; background: rgba(255,59,107,0.03); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <div class="eyebrow" style="text-align:center; display:block;">Three audiences · one score</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 18px;">
+      <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+        <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">For traders</div>
+        <div style="font-size: 18px; font-weight: 700; margin: 6px 0;">Never trade a rugged perp</div>
+        <div style="font-size: 13px; color: var(--text-2); line-height: 1.55;">Check the Safety Score before you click buy. Every meme perp, every HIP-3 market, every thin-float trap — graded in public, for free.</div>
+        <div style="margin-top: 12px;"><a href="#" id="audience-trader-cta" style="font-size: 13px; font-weight: 600;">Open scoreboard →</a></div>
+      </div>
+      <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+        <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">For deployers</div>
+        <div style="font-size: 18px; font-weight: 700; margin: 6px 0;">Prove your markets are safe</div>
+        <div style="font-size: 13px; color: var(--text-2); line-height: 1.55;">Get verified. Display the HIP3Radar badge on your app so traders know your oracles, liquidity, and operations actually pass muster.</div>
+        <div style="margin-top: 12px;"><a href="#pricing" style="font-size: 13px; font-weight: 600;">Get verified →</a></div>
+      </div>
+      <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+        <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;">For tool builders</div>
+        <div style="font-size: 18px; font-weight: 700; margin: 6px 0;">Ship safety scores in 5 minutes</div>
+        <div style="font-size: 13px; color: var(--text-2); line-height: 1.55;">Add a Safety Score column to your dashboard with one API call. Your users will thank you. Your competitors don't have it.</div>
+        <div style="margin-top: 12px;"><a href="#api" style="font-size: 13px; font-weight: 600;">See the API →</a></div>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="features">
-  <h2>Risk signals it catches</h2>
-  <p class="sub">Every signal is backed by a hard number, refreshed in real time. No black-box AI — just surveillance on data that's already public but nobody is watching.</p>
+  <h2>The signals that precede slashing</h2>
+  <p class="sub">Validators slash deployers when oracles are manipulated, markets become illiquid, or OI caps are breached. We catch every precursor, scored 0–100, refreshed every 60 seconds — so you act before they vote.</p>
   <div class="features">
     <div class="feature">
-      <div class="icon">📡</div>
-      <h3>Oracle drift</h3>
-      <p>HL oracle price vs Binance+OKX+Bybit median. Catches manipulated oracles before HLP inherits the position.</p>
+      <div class="icon" aria-hidden="true">
+        <!-- radar / oracle signal -->
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M12 2 L12 12 L20 8"/></svg>
+      </div>
+      <h3>Oracle drift vs CEX consensus</h3>
+      <p>HL oracle vs Binance + OKX + Bybit median. Validators slash deployers whose oracles diverge &gt;50% from start-of-day price — we alert at &gt;5%, hours before the review window.</p>
     </div>
     <div class="feature">
-      <div class="icon">⚡</div>
-      <h3>Mark-oracle spread</h3>
-      <p>HL internal mark price vs oracle price. A live tell for coordinated wick-and-liquidate plays.</p>
+      <div class="icon" aria-hidden="true">
+        <!-- zap / spike -->
+        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <h3>Mark-oracle spread attack detection</h3>
+      <p>The JELLY signature: HL mark wicks while oracle stays. If your market shows a coordinated spread widening, you get a DM in 60 seconds.</p>
     </div>
     <div class="feature">
-      <div class="icon">📈</div>
-      <h3>OI velocity</h3>
-      <p>Open interest growth over 1h and 24h windows. Suspicious accumulation shows up here first.</p>
+      <div class="icon" aria-hidden="true">
+        <!-- trending up -->
+        <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      </div>
+      <h3>OI velocity + cap proximity</h3>
+      <p>Track OI growth vs your configured caps. Alerts at 80% utilization, 90%, breach. No more 3am surprises during Asia hours.</p>
     </div>
     <div class="feature">
-      <div class="icon">🎯</div>
-      <h3>OI / volume ratio</h3>
-      <p>Flags thin-float markets where OI massively exceeds daily turnover — the JELLY shape.</p>
+      <div class="icon" aria-hidden="true">
+        <!-- target -->
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <h3>Thin-float exposure score</h3>
+      <p>OI / daily volume ratio per market. If your market shape starts looking like JELLY (OI ≫ turnover), you're notified before it's exploitable.</p>
     </div>
     <div class="feature">
-      <div class="icon">💸</div>
-      <h3>Funding extremity</h3>
-      <p>Live funding rate percentile. Extreme positive or negative funding = overcrowded positioning.</p>
+      <div class="icon" aria-hidden="true">
+        <!-- activity / pulse -->
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3>Funding extremity + persistence</h3>
+      <p>Extreme funding signals crowded positioning — the condition that precedes squeeze attacks. Track percentile across your entire market set.</p>
     </div>
     <div class="feature">
-      <div class="icon">🎚️</div>
-      <h3>Composite risk score</h3>
-      <p>Weighted sum of all signals, normalized 0–100. Sort any market set by real risk in one click.</p>
+      <div class="icon" aria-hidden="true">
+        <!-- shield with check -->
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <h3>Emergency runbooks</h3>
+      <p>When an alert fires, the dashboard surfaces the validated response: pause market, roll oracle to fallback, escalate to Hypercore. Not guesswork — playbook.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Independence / positioning section -->
+<section style="background: linear-gradient(180deg, transparent 0%, rgba(255,59,107,0.04) 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 72px 28px;">
+  <div style="max-width: 900px; margin: 0 auto;">
+    <div class="eyebrow" style="text-align:center; display:block;">Why independent</div>
+    <h2 style="text-align: center;">The one thing every other HIP-3 tool isn't</h2>
+    <p class="sub" style="text-align: center; max-width: 720px; margin-left: auto; margin-right: auto;">Pyth monitors its oracle clients. BlockSec audits its security clients. Chaos Labs secures its risk clients. Every incumbent has a book of business. <strong style="color: var(--text);">We have every market.</strong> 324 of them, neutral, public, unbuyable.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px;">
+      <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+        <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em;">Ecosystem-wide</div>
+        <div style="font-size: 32px; font-weight: 900; letter-spacing: -0.5px; margin-top: 6px;">324</div>
+        <div style="font-size: 13px; color: var(--text-2); margin-top: 4px;">markets covered across 9 perp dexes</div>
+      </div>
+      <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+        <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em;">No conflicts</div>
+        <div style="font-size: 32px; font-weight: 900; letter-spacing: -0.5px; margin-top: 6px; color: var(--ok);">0</div>
+        <div style="font-size: 13px; color: var(--text-2); margin-top: 4px;">oracle feeds we sell · we just rate them all</div>
+      </div>
+      <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px;">
+        <div style="font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em;">Public by default</div>
+        <div style="font-size: 32px; font-weight: 900; letter-spacing: -0.5px; margin-top: 6px; color: var(--accent);">100%</div>
+        <div style="font-size: 13px; color: var(--text-2); margin-top: 4px;">scores are free and verifiable — no paywall</div>
+      </div>
     </div>
   </div>
 </section>
@@ -580,13 +683,13 @@
 <section class="jelly-section">
   <div class="jelly-inner">
     <div class="eyebrow">Why this exists</div>
-    <h2>Built after JELLY.</h2>
-    <p class="sub">In March 2025 a single trader used a thin-float meme perp to push <strong>$12M in losses onto Hyperliquid's HLP vault</strong>, triggering an emergency manual delisting and a trust crisis. Every signal on this radar would have fired hours before the wipe.</p>
+    <h2>Built after JELLY. Still necessary today.</h2>
+    <p class="sub">In March 2025 a single trader used a thin-float meme perp to push <strong>$12M in losses onto Hyperliquid's HLP vault</strong>, triggering an emergency manual delisting. Every signal this scoreboard tracks would have fired hours before the wipe. But nothing was watching — and nobody independent was publishing what would have been obvious.</p>
     <blockquote>
-      An attacker opened a $4.1M short on ~40% of a token's supply, then pumped the spot price 400% on CEXes. The HL oracle followed. HLP inherited the underwater short at a manipulated oracle price.
+      An attacker opened a $4.1M short on ~40% of a token's supply, then pumped the spot price 400% on CEXes. The HL oracle followed. The liquidator vault inherited the underwater short at a manipulated price.
       <footer>— The JELLY incident, post-mortem</footer>
     </blockquote>
-    <p class="sub">HIP-3 just unlocked permissionless perp deployment. Every new market is another surface for the same playbook. This radar watches all of them, all the time.</p>
+    <p class="sub">HIP-3 unlocked permissionless perp deployment. Every new market is another surface for the same playbook — and now each market has a <em>deployer</em> whose $20M stake is on the line. The scoreboard is for the traders who get hurt first and the deployers who pay second. <strong>Neutral, public, free.</strong></p>
     <div style="margin-top: 28px;">
       <a class="btn" href="/incidents">Watch the JELLY replay →</a>
     </div>
@@ -596,22 +699,23 @@
 <section id="alerts" class="alerts-section">
   <div class="alerts-grid">
     <div class="alerts-copy">
-      <div class="eyebrow"><span class="status-dot"></span> Telegram alerts · live now</div>
-      <h2>Get pinged the moment a market crosses your threshold.</h2>
+      <div class="eyebrow"><span class="status-dot"></span> Verified Badge · Data API</div>
+      <h2>The two ways money flows into an open scoreboard.</h2>
       <p class="lead">
-        Watching the dashboard 24/7 isn't realistic. The bot is. Subscribe once on Telegram, set your risk threshold, and get a DM the second any HL or HIP-3 market crosses it. Free during public beta.
+        The score itself is free forever. We charge where it creates real value — badges for deployers who want public trust, and a data API for every HL tool that wants to ship safety scores to its users in 5 minutes.
       </p>
       <ul class="check-list">
-        <li><span class="ok">✓</span> Subscribe in 5 seconds via slash command or inline buttons</li>
-        <li><span class="ok">✓</span> Filter by dex (alert only on Ventuals, only on native HL, etc.)</li>
-        <li><span class="ok">✓</span> Custom thresholds — 40 for early warning, 60 for critical, anything 1–100</li>
-        <li><span class="ok">✓</span> 6h cooldown per market — no alert fatigue, ever</li>
-        <li><span class="ok">✓</span> Multiple subscriptions per user — stack them however you want</li>
+        <li><span class="ok">✓</span> <strong style="color: var(--text);">Verified Badge</strong> — deployers display "HIP3Radar Verified" on their app. Public score URL. Monthly audit.</li>
+        <li><span class="ok">✓</span> <strong style="color: var(--text);">Data API</strong> — safety scores + all signals via REST. Embed in Buildix, Hyperdash, Loris — anywhere.</li>
+        <li><span class="ok">✓</span> Webhook delivery to Telegram, Slack, Discord, custom endpoints</li>
+        <li><span class="ok">✓</span> Per-market thresholds and multi-channel severity routing</li>
+        <li><span class="ok">✓</span> SVG badge endpoint — drop one <code>&lt;img&gt;</code> tag on your site</li>
+        <li><span class="ok">✓</span> Audit export for compliance, dispute resolution, validator reviews</li>
       </ul>
-      <a class="alerts-cta" href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">
-        Subscribe on Telegram →
+      <a class="alerts-cta" href="#pricing">
+        See pricing →
       </a>
-      <p class="alerts-note">No signup, no email, no payment. Free during beta — paid tiers later get higher rate limits and webhook delivery to Discord/Slack.</p>
+      <p class="alerts-note">Free public scoreboard and Telegram alerts. Paid tiers unlock the badge, API limits, and priority support.</p>
     </div>
 
     <div class="alerts-mockup">
@@ -654,7 +758,7 @@
             Mark-oracle spread: +14.70%<br>
             Open interest: $4,469,445<br>
             OI / 24h volume: 12.7x<br><br>
-            <span class="tg-link">Open the live radar →</span>
+            <span class="tg-link">Open the live scoreboard →</span>
             <span class="tg-time">14:47</span>
           </div>
         </div>
@@ -698,69 +802,149 @@
 
 <section id="pricing">
   <h2>Pricing</h2>
-  <p class="sub">The public radar is free forever. Paid tiers unlock alerts, custom signals, and dedicated infrastructure for bot operators, desks, and HIP-3 deployers who need to know 3 hours before JELLY instead of 3 hours after.</p>
+  <p class="sub">The public scoreboard, Telegram alerts, and basic API are free forever. We charge for two things: a Verified Badge for deployers, and data-rate limits for dashboards that embed our API.</p>
 
-  <div class="pricing-grid">
-    <div class="price-card">
-      <div class="tier-name">Pro</div>
-      <div class="tier-desc">For individual bot operators</div>
-      <div class="price"><span class="dollar">$</span>29<span class="period">/mo</span></div>
-      <ul class="features-list">
-        <li><span class="check">✓</span> Unlimited webhook alerts</li>
-        <li><span class="check">✓</span> Telegram / Discord / Slack delivery</li>
-        <li><span class="check">✓</span> Per-market custom thresholds</li>
-        <li><span class="check">✓</span> Priority latency (sub-30s)</li>
-        <li><span class="check">✓</span> Full historical API access</li>
-        <li><span class="check">✓</span> Email support</li>
-      </ul>
-      <button class="price-btn" onclick="openWaitlistModal('pro')">Join waitlist →</button>
-    </div>
+  <!-- FOR DEPLOYERS -->
+  <div style="margin-top: 36px;">
+    <div class="eyebrow" style="text-align:center; display:block;"><span style="color: var(--accent);">●</span> For deployers</div>
+    <h3 style="font-size: 28px; font-weight: 800; margin: 10px 0 8px; letter-spacing: -0.4px; text-align:center;">Prove your markets are safe</h3>
+    <p class="sub" style="margin: 0 auto 28px; font-size: 14px; text-align:center; max-width: 640px;">Deployers pay for the badge and for private control (custom thresholds, monthly reports). The public score is always free and visible regardless.</p>
 
-    <div class="price-card popular">
-      <div class="popular-badge">Most popular</div>
-      <div class="tier-name">Team</div>
-      <div class="tier-desc">For prop desks &amp; trading teams</div>
-      <div class="price"><span class="dollar">$</span>199<span class="period">/mo</span></div>
-      <ul class="features-list">
-        <li><span class="check">✓</span> Everything in Pro</li>
-        <li><span class="check">✓</span> Multi-user (up to 10 seats)</li>
-        <li><span class="check">✓</span> 99.9% uptime SLA</li>
-        <li><span class="check">✓</span> Priority email support</li>
-        <li><span class="check">✓</span> Custom signals &amp; alert logic</li>
-        <li><span class="check">✓</span> Private / permissioned markets</li>
-      </ul>
-      <button class="price-btn" onclick="openWaitlistModal('team')">Join waitlist →</button>
-    </div>
+    <div class="pricing-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="price-card">
+        <div class="tier-name">Scoreboard</div>
+        <div class="tier-desc">Always free · public record</div>
+        <div class="price"><span class="dollar">$</span>0</div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> Public Safety Score page for every market</li>
+          <li><span class="check">✓</span> 30-day score history</li>
+          <li><span class="check">✓</span> Community Telegram alerts</li>
+          <li><span class="check">✓</span> JSON API (rate-limited)</li>
+          <li style="color: var(--text-3);"><span style="color: var(--text-3);">✕</span> No badge to display</li>
+          <li style="color: var(--text-3);"><span style="color: var(--text-3);">✕</span> No deployer dashboard</li>
+        </ul>
+        <a class="price-btn" href="#" style="text-decoration:none;display:block;text-align:center;">Open scoreboard →</a>
+      </div>
 
-    <div class="price-card">
-      <div class="tier-name">Enterprise</div>
-      <div class="tier-desc">For HIP-3 deployers &amp; funds</div>
-      <div class="price"><span class="dollar">$</span><span class="range">2k–10k</span><span class="period">/mo</span></div>
-      <ul class="features-list">
-        <li><span class="check">✓</span> Everything in Team</li>
-        <li><span class="check">✓</span> Dedicated infrastructure</li>
-        <li><span class="check">✓</span> Custom oracle sources &amp; feeds</li>
-        <li><span class="check">✓</span> Custom dashboards &amp; white-label</li>
-        <li><span class="check">✓</span> On-prem / self-hosted option</li>
-        <li><span class="check">✓</span> Dedicated Slack &amp; on-call</li>
-      </ul>
-      <button class="price-btn" onclick="openWaitlistModal('enterprise')">Join waitlist →</button>
+      <div class="price-card popular">
+        <div class="popular-badge">Most popular</div>
+        <div class="tier-name">Verified</div>
+        <div class="tier-desc">For any HIP-3 deployer</div>
+        <div class="price"><span class="dollar">$</span>299<span class="period">/mo</span></div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> <strong style="color: var(--text);">"HIP3Radar Verified" badge</strong> on your app</li>
+          <li><span class="check">✓</span> Shareable verification URL</li>
+          <li><span class="check">✓</span> Monthly audit report (PDF)</li>
+          <li><span class="check">✓</span> Private deployer dashboard</li>
+          <li><span class="check">✓</span> Score-change alerts via Telegram + webhook</li>
+          <li><span class="check">✓</span> Email support · 24h response</li>
+        </ul>
+        <a class="price-btn" href="/verify.html" style="text-decoration:none;display:block;text-align:center;" aria-label="Start verification — opens the 4-step application">Start verification →</a>
+      </div>
+
+      <div class="price-card">
+        <div class="tier-name">Verified Pro</div>
+        <div class="tier-desc">For high-volume deployers</div>
+        <div class="price"><span class="dollar">$</span>899<span class="period">/mo</span></div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> Everything in Verified</li>
+          <li><span class="check">✓</span> Per-market custom thresholds</li>
+          <li><span class="check">✓</span> Multi-channel routing: Slack, PagerDuty, SMS</li>
+          <li><span class="check">✓</span> Audit trail export for validator disputes</li>
+          <li><span class="check">✓</span> 4h support SLA + private Slack</li>
+          <li><span class="check">✓</span> Preview score changes before public</li>
+        </ul>
+        <button class="price-btn" onclick="openWaitlistModal('verified_pro')" aria-label="Join waitlist for Verified Pro tier">Join waitlist →</button>
+      </div>
     </div>
   </div>
+
+  <!-- FOR TOOL BUILDERS -->
+  <div style="margin-top: 64px;">
+    <div class="eyebrow" style="text-align:center; display:block;"><span style="color: var(--accent);">●</span> For tool builders &amp; dashboards</div>
+    <h3 style="font-size: 28px; font-weight: 800; margin: 10px 0 8px; letter-spacing: -0.4px; text-align:center;">Add safety scores to your dashboard in 5 minutes</h3>
+    <p class="sub" style="margin: 0 auto 28px; font-size: 14px; text-align:center; max-width: 640px;">Buildix, Hyperdash, Loris, ASXN, your trading terminal — embed the Safety Score column. One API call, one SVG badge, instant differentiation.</p>
+
+    <div class="pricing-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="price-card">
+        <div class="tier-name">API Starter</div>
+        <div class="tier-desc">Side projects &amp; MVPs</div>
+        <div class="price"><span class="dollar">$</span>99<span class="period">/mo</span></div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> 10K requests / day</li>
+          <li><span class="check">✓</span> Safety Score + key signals</li>
+          <li><span class="check">✓</span> SVG badge endpoint</li>
+          <li><span class="check">✓</span> 7-day history</li>
+          <li><span class="check">✓</span> Email support</li>
+          <li style="color: var(--text-3);"><span style="color: var(--text-3);">✕</span> No webhooks</li>
+        </ul>
+        <button class="price-btn" onclick="openWaitlistModal('api_starter')" aria-label="Request API Starter key">Get API key →</button>
+      </div>
+
+      <div class="price-card popular">
+        <div class="popular-badge">For dashboards</div>
+        <div class="tier-name">API Pro</div>
+        <div class="tier-desc">For Buildix, Hyperdash, Loris, et al.</div>
+        <div class="price"><span class="dollar">$</span>499<span class="period">/mo</span></div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> 100K requests / day</li>
+          <li><span class="check">✓</span> All signals (oracle, OI, funding, spread)</li>
+          <li><span class="check">✓</span> Webhook push for score changes</li>
+          <li><span class="check">✓</span> Full historical series</li>
+          <li><span class="check">✓</span> Embeddable widget</li>
+          <li><span class="check">✓</span> Co-marketing opportunity</li>
+        </ul>
+        <button class="price-btn" onclick="openWaitlistModal('api_pro')" aria-label="Join waitlist for API Pro tier">Join waitlist →</button>
+      </div>
+
+      <div class="price-card">
+        <div class="tier-name">API Enterprise</div>
+        <div class="tier-desc">White-label &amp; custom</div>
+        <div class="price"><span class="dollar">$</span><span class="range">2k+</span><span class="period">/mo</span></div>
+        <ul class="features-list">
+          <li><span class="check">✓</span> Unlimited requests</li>
+          <li><span class="check">✓</span> White-label branding</li>
+          <li><span class="check">✓</span> Custom signals &amp; scoring weights</li>
+          <li><span class="check">✓</span> On-prem / private deployment option</li>
+          <li><span class="check">✓</span> Dedicated Slack + on-call</li>
+          <li><span class="check">✓</span> 99.9% uptime SLA</li>
+        </ul>
+        <button class="price-btn" onclick="openWaitlistModal('api_enterprise')" aria-label="Contact sales for API Enterprise tier">Contact sales →</button>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align: center; margin-top: 40px; color: var(--text-3); font-size: 13px;">
+    Questions? We reply fast at <a href="mailto:hello@hip3radar.xyz" style="color: var(--accent);">hello@hip3radar.xyz</a>.
+  </p>
 </section>
 
 <section id="api">
-  <h2>Free JSON API</h2>
-  <p class="sub">CORS-enabled. No key. No rate limit beyond sane use. If you run a bot on HL, plug this into your risk layer.</p>
+  <h2>The Safety Score API</h2>
+  <p class="sub">Drop-in infrastructure for any Hyperliquid dashboard. Same endpoints that power the public scoreboard — CORS-enabled, documented, stable. Free for prototyping, paid for production volume.</p>
+
   <div class="api-box">
-<span class="hl"># Get top 25 highest-risk markets right now</span>
-curl <span class="acc" id="api-url-state">https://.../hip3radar/api/state</span>
+<span class="hl"># Get the full scoreboard (every market, every signal)</span>
+curl <span class="acc" id="api-url-all">https://hip3radar.xyz/api/all</span>
 
-<span class="hl"># Full payload (every market, every signal)</span>
-curl <span class="acc" id="api-url-all">https://.../hip3radar/api/all</span>
+<span class="hl"># Top 25 highest-risk markets right now</span>
+curl <span class="acc" id="api-url-state">https://hip3radar.xyz/api/state</span>
 
-<span class="hl"># Per-dex slice</span>
-curl <span class="acc" id="api-url-dex">https://.../hip3radar/api/dex/xyz</span>
+<span class="hl"># Slice by dex (e.g. ventuals, native HL, hyperbeat)</span>
+curl <span class="acc" id="api-url-dex">https://hip3radar.xyz/api/dex/xyz</span>
+
+<span class="hl"># Per-market detail + historical score series</span>
+curl <span class="acc">https://hip3radar.xyz/api/market/vntl/ANTHROPIC</span>
+
+<span class="hl"># Drop-in SVG badge — one img tag on your site</span>
+<span class="acc">&lt;img src="https://hip3radar.xyz/badge/vntl/ANTHROPIC.svg"&gt;</span>
+  </div>
+
+  <p style="text-align: center; margin-top: 24px; color: var(--text-2); font-size: 14px;">
+    Running a Hyperliquid dashboard or bot? Add a <strong style="color: var(--text);">Safety Score</strong> column in under an hour. Your users notice. Your competitors don't have it.
+  </p>
+  <div style="text-align:center; margin-top: 16px;">
+    <a class="alerts-cta" href="#pricing">See API pricing →</a>
   </div>
 </section>
 
@@ -769,7 +953,7 @@ curl <span class="acc" id="api-url-dex">https://.../hip3radar/api/dex/xyz</span>
     <a href="#features">Features</a>
     <a href="#how">How it works</a>
     <a href="#api">API</a>
-    <a id="footer-cta" href="#" target="_blank" rel="noopener">Live radar</a>
+    <a id="footer-cta" href="#" target="_blank" rel="noopener">Live scoreboard</a>
   </div>
   <p class="tag">HIP3Radar is independent infrastructure for the Hyperliquid ecosystem. No affiliation with Hyperliquid Labs.</p>
   <p class="disclaimer">
@@ -807,6 +991,8 @@ document.getElementById("nav-cta").href = DASHBOARD_URL;
 document.getElementById("hero-cta").href = DASHBOARD_URL;
 document.getElementById("cta-open").href = DASHBOARD_URL;
 document.getElementById("footer-cta").href = DASHBOARD_URL;
+var traderCta = document.getElementById("audience-trader-cta");
+if (traderCta) traderCta.href = DASHBOARD_URL;
 document.getElementById("demo-frame").src = DASHBOARD_URL;
 document.getElementById("api-url-state").textContent = "https://hip3radar.xyz/hip3radar/api/state";
 document.getElementById("api-url-all").textContent = "https://hip3radar.xyz/hip3radar/api/all";
@@ -854,10 +1040,14 @@ setInterval(loadLiveStats, 30000);
   var WAITLIST_SEND_URL = '/api/waitlist/send';
 
   var PLAN_LABELS = {
-    general: '',
-    pro: 'Pro ($29/mo)',
-    team: 'Team ($199/mo)',
-    enterprise: 'Enterprise ($2k–10k/mo)'
+    general:        '',
+    // Deployer tiers
+    verified:       'Verified ($299/mo)',
+    verified_pro:   'Verified Pro ($899/mo)',
+    // API tiers
+    api_starter:    'API Starter ($99/mo)',
+    api_pro:        'API Pro ($499/mo)',
+    api_enterprise: 'API Enterprise ($2k+/mo)'
   };
 
   var currentPlan = 'general';
