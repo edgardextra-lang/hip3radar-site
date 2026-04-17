@@ -490,16 +490,20 @@
     btn.disabled = true;
     btn.textContent = 'Submitting…';
 
+    // Supabase table uses fixed columns (email/plan/call_sign/source/created_at).
+    // We JSON-stringify the structured verification data into `source` and the
+    // webhook handler parses it out. `call_sign` gives a fast-scan human label.
     var payload = {
       email: email,
       plan: 'verification_application',
-      metadata: {
+      call_sign: 'HIP3Radar:verification:' + deployer,
+      source: JSON.stringify({
+        from: 'verify.html',
         deployer: deployer,
         wallet: wallet,
         markets: markets,
         notes: notes,
-        source: 'verify.html',
-      },
+      }),
       created_at: new Date().toISOString(),
     };
 
