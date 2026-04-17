@@ -823,7 +823,7 @@
           <li style="color: var(--text-3);"><span style="color: var(--text-3);">✕</span> No badge to display</li>
           <li style="color: var(--text-3);"><span style="color: var(--text-3);">✕</span> No deployer dashboard</li>
         </ul>
-        <a class="price-btn" href="#" style="text-decoration:none;display:block;text-align:center;">Start free →</a>
+        <a class="price-btn" id="scoreboard-start-cta" href="#" style="text-decoration:none;display:block;text-align:center;">Start free →</a>
       </div>
 
       <div class="price-card popular">
@@ -1002,6 +1002,8 @@ document.getElementById("cta-open").href = DASHBOARD_URL;
 document.getElementById("footer-cta").href = DASHBOARD_URL;
 var traderCta = document.getElementById("audience-trader-cta");
 if (traderCta) traderCta.href = DASHBOARD_URL;
+var scoreboardStart = document.getElementById("scoreboard-start-cta");
+if (scoreboardStart) scoreboardStart.href = DASHBOARD_URL;
 document.getElementById("demo-frame").src = DASHBOARD_URL;
 document.getElementById("api-url-state").textContent = "https://hip3radar.xyz/hip3radar/api/state";
 document.getElementById("api-url-all").textContent = "https://hip3radar.xyz/hip3radar/api/all";
