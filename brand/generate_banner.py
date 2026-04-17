@@ -219,7 +219,7 @@ def draw_risk_curve(img: Image.Image):
     # Chart title tag above the chart (small, uppercase)
     title_font = load_font("bold", 11)
     draw.text((chart_x0, chart_y0 - int(28 * SS)),
-              "JELLY · MARCH 26, 2025 · $12M HLP LOSS",
+              "WE BUILT THIS AFTER JELLY · $12M HLP LOSS · MARCH 2025",
               font=title_font, fill=TEXT_MUTED)
 
 
@@ -252,9 +252,9 @@ def draw_text_zone(img: Image.Image):
     x0 = int(W * 0.04)
     headline_y = int(H * 0.22)
 
-    # Small eyebrow badge "● HIP-3 risk surveillance"
+    # Small eyebrow badge
     badge_font = load_font("bold", 13)
-    badge_text = "● PUBLIC BETA"
+    badge_text = "● INDEPENDENT · NEUTRAL · PUBLIC"
     badge_bbox = draw.textbbox((0, 0), badge_text, font=badge_font)
     bw = badge_bbox[2] - badge_bbox[0]
     bh = badge_bbox[3] - badge_bbox[1]
@@ -285,8 +285,8 @@ def draw_text_zone(img: Image.Image):
 
     # Headline below: two lines
     headline_font = load_font("black", 40)
-    line1 = "The JELLY alarm for"
-    line2 = "Hyperliquid."
+    line1 = "Every Hyperliquid perp,"
+    line2 = "graded."
     headline_start_y = dot_y + dot_radius + int(28 * SS)
     draw.text((x0, headline_start_y), line1, font=headline_font, fill=TEXT)
     line1_bbox = draw.textbbox((0, 0), line1, font=headline_font)
