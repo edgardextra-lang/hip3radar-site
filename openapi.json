@@ -1,0 +1,276 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HIP3Radar API",
+    "version": "1.0.0",
+    "summary": "Real-time risk surveillance for every Hyperliquid native + HIP-3 perpetual market.",
+    "description": "Free, public, CORS-enabled JSON API. No key required for the public tier. Authenticated keys available for higher rate limits, webhooks, and history (see /api-key).",
+    "contact": {
+      "name": "HIP3Radar",
+      "url": "https://hip3radar.xyz",
+      "email": "hello@hip3radar.xyz"
+    },
+    "license": {
+      "name": "MIT (SDK)",
+      "url": "https://github.com/edgardextra-lang/hip3radar-site"
+    }
+  },
+  "servers": [
+    { "url": "https://hip3radar.xyz", "description": "Production" }
+  ],
+  "tags": [
+    { "name": "scoreboard", "description": "Live market risk scores" },
+    { "name": "verification", "description": "HIP-3 deployer verification + badges" },
+    { "name": "incidents", "description": "Historical incident archive" },
+    { "name": "alerts", "description": "Threshold-crossing alerts" },
+    { "name": "system", "description": "Service health" }
+  ],
+  "paths": {
+    "/hip3radar/api/state": {
+      "get": {
+        "tags": ["scoreboard"],
+        "summary": "Top 25 highest-risk markets right now",
+        "description": "Returns the snapshot's top 25 markets sorted by composite risk score (descending). Cached 15s at the edge.",
+        "responses": {
+          "200": {
+            "description": "Snapshot summary",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StateSnapshot" }
+              }
+            }
+          },
+          "503": { "description": "Snapshot not available (polling service down)" }
+        }
+      }
+    },
+    "/hip3radar/api/all": {
+      "get": {
+        "tags": ["scoreboard"],
+        "summary": "Full snapshot — every market across every dex",
+        "responses": {
+          "200": {
+            "description": "Full snapshot",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FullSnapshot" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hip3radar/api/dex/{dex}": {
+      "get": {
+        "tags": ["scoreboard"],
+        "summary": "All markets on one dex",
+        "parameters": [
+          { "name": "dex", "in": "path", "required": true, "schema": { "type": "string", "enum": ["hl","xyz","vntl","flx","hyna","km","cash","para","abcd"] } }
+        ],
+        "responses": {
+          "200": { "description": "Dex slice", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DexSlice" } } } }
+        }
+      }
+    },
+    "/hip3radar/api/market/{dex}/{coin}": {
+      "get": {
+        "tags": ["scoreboard"],
+        "summary": "Single market detail",
+        "parameters": [
+          { "name": "dex", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "coin", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Market detail" },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/hip3radar/api/history/{dex}/{coin}": {
+      "get": {
+        "tags": ["scoreboard"],
+        "summary": "Per-market time series",
+        "parameters": [
+          { "name": "dex", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "coin", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "hours", "in": "query", "schema": { "type": "integer", "default": 24, "minimum": 1, "maximum": 168 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Time series",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/HistorySeries" } } }
+          }
+        }
+      }
+    },
+    "/hip3radar/api/alerts": {
+      "get": {
+        "tags": ["alerts"],
+        "summary": "Recent alerts",
+        "parameters": [
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 100, "maximum": 500 } },
+          { "name": "level", "in": "query", "schema": { "type": "string", "enum": ["warning", "critical"] } }
+        ],
+        "responses": { "200": { "description": "Alert list" } }
+      }
+    },
+    "/hip3radar/api/incidents": {
+      "get": {
+        "tags": ["incidents"],
+        "summary": "All documented HL manipulation events",
+        "responses": { "200": { "description": "Incident list" } }
+      }
+    },
+    "/hip3radar/api/incidents/{slug}": {
+      "get": {
+        "tags": ["incidents"],
+        "summary": "Single incident with replay data",
+        "parameters": [
+          { "name": "slug", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Incident detail" }, "404": { "description": "Not found" } }
+      }
+    },
+    "/hip3radar/api/verified": {
+      "get": {
+        "tags": ["verification"],
+        "summary": "All verified deployers",
+        "responses": { "200": { "description": "Deployer list" } }
+      }
+    },
+    "/hip3radar/api/verification/{slug}": {
+      "get": {
+        "tags": ["verification"],
+        "summary": "One deployer's verification status",
+        "parameters": [
+          { "name": "slug", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Verification detail" }, "404": { "description": "Not verified" } }
+      }
+    },
+    "/badge/{slug}.svg": {
+      "get": {
+        "tags": ["verification"],
+        "summary": "Embeddable SVG badge for a deployer",
+        "parameters": [
+          { "name": "slug", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "SVG image", "content": { "image/svg+xml": {} } },
+          "404": { "description": "Unknown deployer (still returns valid 'Unknown' SVG)", "content": { "image/svg+xml": {} } }
+        }
+      }
+    },
+    "/badge.js": {
+      "get": {
+        "tags": ["verification"],
+        "summary": "Web-component bundle for <hip3radar-badge>",
+        "responses": { "200": { "description": "JS bundle", "content": { "application/javascript": {} } } }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "tags": ["system"],
+        "summary": "Aggregate health for the status page",
+        "responses": { "200": { "description": "Health snapshot" } }
+      }
+    },
+    "/healthz": {
+      "get": {
+        "tags": ["system"],
+        "summary": "Liveness probe",
+        "responses": { "200": { "description": "Alive" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Optional. Required for paid tiers (Pro / Team / Verified Deployer). Free public endpoints accept unauthenticated requests."
+      }
+    },
+    "schemas": {
+      "Market": {
+        "type": "object",
+        "properties": {
+          "ts": { "type": "integer", "description": "Unix timestamp (seconds)" },
+          "dex": { "type": "string", "example": "vntl" },
+          "coin": { "type": "string", "example": "ANTHROPIC" },
+          "name": { "type": "string", "example": "vntl:ANTHROPIC" },
+          "risk_score": { "type": "number", "minimum": 0, "maximum": 100, "description": "Composite risk 0-100. Higher = more dangerous." },
+          "oracle_px": { "type": "number" },
+          "mark_px": { "type": "number" },
+          "mid_px": { "type": "number" },
+          "open_interest": { "type": "number", "description": "USD notional" },
+          "day_ntl_vlm": { "type": "number", "description": "24h volume in USD notional" },
+          "funding": { "type": "number", "description": "Hourly funding rate" },
+          "cex_median_px": { "type": "number", "nullable": true, "description": "Median of Binance/OKX/Bybit prices" },
+          "oracle_drift_pct": { "type": "number", "nullable": true, "description": "HL oracle price vs CEX median, %" },
+          "mark_oracle_spread_pct": { "type": "number", "description": "HL mark price vs HL oracle price, %" },
+          "oi_velocity_1h": { "type": "number", "nullable": true, "description": "OI growth over the last 1 hour, %" },
+          "oi_velocity_24h": { "type": "number", "nullable": true, "description": "OI growth over the last 24 hours, %" },
+          "oi_vlm_ratio": { "type": "number", "nullable": true, "description": "OI / 24h volume" },
+          "funding_extremity": { "type": "number", "description": "Magnitude of funding rate" }
+        }
+      },
+      "StateSnapshot": {
+        "type": "object",
+        "properties": {
+          "generated_at": { "type": "integer", "description": "Unix timestamp (seconds)" },
+          "generated_at_iso": { "type": "string", "format": "date-time" },
+          "market_count": { "type": "integer" },
+          "dex_count": { "type": "integer" },
+          "top_risk": { "type": "array", "items": { "$ref": "#/components/schemas/Market" } }
+        }
+      },
+      "FullSnapshot": {
+        "allOf": [
+          { "$ref": "#/components/schemas/StateSnapshot" },
+          {
+            "type": "object",
+            "properties": {
+              "all_markets": { "type": "array", "items": { "$ref": "#/components/schemas/Market" } },
+              "by_dex": { "type": "object", "additionalProperties": { "type": "array", "items": { "$ref": "#/components/schemas/Market" } } }
+            }
+          }
+        ]
+      },
+      "DexSlice": {
+        "type": "object",
+        "properties": {
+          "dex": { "type": "string" },
+          "count": { "type": "integer" },
+          "markets": { "type": "array", "items": { "$ref": "#/components/schemas/Market" } }
+        }
+      },
+      "HistorySeries": {
+        "type": "object",
+        "properties": {
+          "dex": { "type": "string" },
+          "coin": { "type": "string" },
+          "hours": { "type": "integer" },
+          "count": { "type": "integer" },
+          "series": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ts": { "type": "integer" },
+                "oracle_px": { "type": "number" },
+                "mark_px": { "type": "number" },
+                "open_interest": { "type": "number" },
+                "day_ntl_vlm": { "type": "number" },
+                "funding": { "type": "number" },
+                "oracle_drift_pct": { "type": "number", "nullable": true },
+                "mark_oracle_spread_pct": { "type": "number" },
+                "risk_score": { "type": "number" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

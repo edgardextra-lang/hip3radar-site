@@ -1,0 +1,19 @@
+{
+  "name": "hip3radar",
+  "version": "0.1.0",
+  "description": "JavaScript SDK for the HIP3Radar API — real-time risk surveillance for every Hyperliquid native + HIP-3 perp market.",
+  "main": "hip3radar.js",
+  "module": "hip3radar.js",
+  "type": "module",
+  "exports": {
+    ".": "./hip3radar.js"
+  },
+  "files": ["hip3radar.js", "README.md"],
+  "engines": { "node": ">=18" },
+  "keywords": ["hyperliquid", "hip3", "risk", "perpetuals", "defi", "monitoring", "trading"],
+  "author": "HIP3Radar <hello@hip3radar.xyz>",
+  "license": "MIT",
+  "homepage": "https://hip3radar.xyz",
+  "repository": "github:edgardextra-lang/hip3radar-site",
+  "bugs": { "email": "hello@hip3radar.xyz" }
+}

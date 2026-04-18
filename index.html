@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>HIP3Radar — the risk scoreboard for HIP-3</title>
+<link rel="icon" type="image/gif" href="/favicon.gif">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
@@ -1098,7 +1099,7 @@
   <div class="nav-right">
     <span class="pill-live"><span class="dot"></span>Scoring 247 markets · 19 deployers</span>
     <a class="btn" href="#api">Get API key</a>
-    <a class="btn btn-primary" href="#scoreboard">See the scoreboard →</a>
+    <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">See the scoreboard →</a>
   </div>
 </nav>
 
@@ -1126,7 +1127,7 @@
         HIP3Radar scores every builder-deployed perp DEX on Hyperliquid across oracle integrity, stake health, liquidity resilience, and governance. Read the scoreboard. Embed the badge. Build on the API.
       </p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="#scoreboard">Open scoreboard →</a>
+        <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">Open scoreboard →</a>
         <a class="btn" href="#badge">Get the badge</a>
         <a class="btn btn-tg" href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">Get alerts on Telegram</a>
         <a class="btn" href="#api">API docs</a>
@@ -1639,7 +1640,7 @@
         Subscribe to rating changes across every deployer. Fire an alert when a market's oracle deviation breaks threshold. Gate your frontend's "Trade" button on a live score. The risk layer, programmable.
       </p>
       <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;">
-        <a class="btn btn-primary" href="#">Get an API key →</a>
+        <a class="btn btn-primary" href="/api-key">Get an API key →</a>
         <a class="btn" href="#">Read the SDK docs</a>
         <a class="btn" href="#">OpenAPI spec</a>
       </div>
@@ -1760,8 +1761,8 @@ console.log<span class="p">(</span>card.grade<span class="p">,</span> card.dimen
   <h2>See the whole <u>risk surface</u>.<br><em>Before you</em> route the order.</h2>
   <p class="sub">Open scoreboard. Embeddable badge. Public API. The trust layer for HIP-3.</p>
   <div class="row">
-    <a class="btn btn-primary" href="#scoreboard">Open scoreboard →</a>
-    <a class="btn" href="#api">Get API key</a>
+    <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">Open scoreboard →</a>
+    <a class="btn" href="/api-key">Get API key</a>
     <a class="btn" href="mailto:hello@hip3radar.xyz">hello@hip3radar.xyz</a>
   </div>
 </section>
@@ -1777,8 +1778,8 @@ console.log<span class="p">(</span>card.grade<span class="p">,</span> card.dimen
   <div></div>
   <div class="cols">
     <div class="col"><b>Product</b><a href="#scoreboard">Scoreboard</a><a href="#badge">Badge</a><a href="#api">API</a><a href="#">Status</a></div>
-    <div class="col"><b>Learn</b><a href="#methodology">Methodology</a><a href="#">HIP-3 primer</a><a href="#">Changelog</a><a href="#">Glossary</a></div>
-    <div class="col"><b>Co.</b><a href="#">Twitter</a><a href="#">Discord</a><a href="#">Careers</a><a href="mailto:hello@hip3radar.xyz">hello@hip3radar.xyz</a></div>
+    <div class="col"><b>Learn</b><a href="#methodology">Methodology</a><a href="/changelog">Changelog</a><a href="/status">Status</a></div>
+    <div class="col"><b>Co.</b><a href="https://x.com/hip3radar" target="_blank" rel="noopener">Twitter</a><a href="mailto:hello@hip3radar.xyz">hello@hip3radar.xyz</a></div>
   </div>
 </footer>
 
@@ -1898,95 +1899,184 @@ BLIPS.forEach((b, i) => {
   document.getElementById("aggShare").setAttribute("d", ds);
 })();
 
-/* ════════ Top markets bars ════════ */
-const BARS = [
-  ["XYZ100",     "trade[XYZ]", 842, "$842M"],
-  ["XYZ-TSLA",   "trade[XYZ]", 318, "$318M"],
-  ["VT-SPACEX",  "Ventuals",   241, "$241M"],
-  ["hY-BTC",     "hyENA",      188, "$188M"],
-  ["XYZ-NVDA",   "trade[XYZ]", 162, "$162M"],
-  ["FL-XAU",     "Felix",      134, "$134M"],
-  ["VT-OPENAI",  "Ventuals",    96, "$96M"],
-  ["AU-10Y",     "Aura",        74, "$74M"],
-  ["MK-KAITO",   "Markets",     58, "$58M"],
-];
-const maxBar = Math.max(...BARS.map(b=>b[2]));
-document.getElementById("bars").innerHTML = BARS.map(([sym,venue,vol,label]) => `
-  <div class="bar-row">
-    <div><span style="color:var(--ink);">${sym}</span><div style="color:var(--ink-3);font-size:10px;margin-top:2px;">${venue}</div></div>
-    <div class="bar-track"><div class="bar-fill" style="width:${(vol/maxBar*100).toFixed(1)}%"></div></div>
-    <div class="val">${label}</div>
-  </div>
-`).join("");
-
-/* ════════ Hero counter tickers ════════ */
-function jitter(el, base, fmtFn) {
-  let v = base, dir = 1;
-  setInterval(() => {
-    v += (Math.random() - 0.5) * base * 0.0015;
-    if (Math.abs(v - base) > base * 0.008) dir = -dir;
-    el.textContent = fmtFn(v);
-  }, 1800);
+/* ════════ Top markets bars — LIVE DATA from /hip3radar/api/all ════════ */
+function fmtUsd(v) {
+  if (v == null || v === 0) return "—";
+  if (v >= 1e9) return "$" + (v/1e9).toFixed(2) + "B";
+  if (v >= 1e6) return "$" + (v/1e6).toFixed(1) + "M";
+  if (v >= 1e3) return "$" + (v/1e3).toFixed(0) + "K";
+  return "$" + Math.round(v);
 }
-jitter(document.getElementById("mVol"), 2.14e9, v => "$" + (v/1e9).toFixed(2) + "B");
-jitter(document.getElementById("mOI"),  1.43e9, v => "$" + (v/1e9).toFixed(2) + "B");
+
+async function loadBarsLive() {
+  const barsEl = document.getElementById("bars");
+  if (!barsEl) return;
+  let snap;
+  try {
+    const r = await fetch("/hip3radar/api/all", { cache: "no-store" });
+    snap = await r.json();
+  } catch (e) {
+    barsEl.innerHTML = `<div class="bar-row"><div style="color:var(--ink-3);font-family:var(--mono);">Could not load live data.</div></div>`;
+    return;
+  }
+  const top = (snap.all_markets || [])
+    .filter(m => m.day_ntl_vlm > 0)
+    .sort((a,b) => b.day_ntl_vlm - a.day_ntl_vlm)
+    .slice(0, 9);
+  if (!top.length) { barsEl.innerHTML = ""; return; }
+  const max = top[0].day_ntl_vlm;
+  barsEl.innerHTML = top.map(m => {
+    const meta = DEPLOYER_META[m.dex] || { display: m.dex.toUpperCase() };
+    return `<div class="bar-row" onclick="window.location.href='/market/${m.dex}/${m.coin}'" style="cursor:pointer;">
+      <div><span style="color:var(--ink);">${m.coin}</span><div style="color:var(--ink-3);font-size:10px;margin-top:2px;">${meta.display}</div></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(m.day_ntl_vlm/max*100).toFixed(1)}%"></div></div>
+      <div class="val">${fmtUsd(m.day_ntl_vlm)}</div>
+    </div>`;
+  }).join("");
+}
+loadBarsLive();
+setInterval(loadBarsLive, 60000);
+
+/* ════════ Hero counter tickers — LIVE DATA ════════ */
+async function loadHeroLive() {
+  const volEl = document.getElementById("mVol");
+  const oiEl = document.getElementById("mOI");
+  if (!volEl && !oiEl) return;
+  try {
+    const r = await fetch("/hip3radar/api/all", { cache: "no-store" });
+    const snap = await r.json();
+    const totalVol = (snap.all_markets || []).reduce((sum, m) => sum + (m.day_ntl_vlm || 0), 0);
+    const totalOi = (snap.all_markets || []).reduce((sum, m) => sum + (m.open_interest || 0), 0);
+    if (volEl) volEl.textContent = fmtUsd(totalVol);
+    if (oiEl) oiEl.textContent = fmtUsd(totalOi);
+  } catch (e) {
+    if (volEl) volEl.textContent = "—";
+    if (oiEl) oiEl.textContent = "—";
+  }
+}
+loadHeroLive();
+setInterval(loadHeroLive, 60000);
 
 
-/* ════════ Scoreboard table ════════ */
-const DEPLOYERS = [
-  { id: 1, name: "trade[XYZ]",  sub: "14 markets · equities, pre-IPO", color: "#7ef3a0", grade: "AA", score: 94, bars: [4,4,4,3,4], dims: [96,100,92,88,99.97], delta: "+5", trend: "up", flag: null,                         flagText: null },
-  { id: 2, name: "Ventuals",     sub: "22 markets · pre-IPO tickers",  color: "#b79cff", grade: "AA", score: 91, bars: [4,4,3,4,3], dims: [94,97,78,92,99.91], delta: "+2", trend: "up", flag: null,                         flagText: null },
-  { id: 3, name: "hyENA",        sub: "8 markets · BTC/ETH basis",     color: "#ffb648", grade: "A",  score: 86, bars: [4,3,4,3,4], dims: [89,84,94,78,99.88], delta: "+1", trend: "up", flag: null,                         flagText: null },
-  { id: 4, name: "Kinetiq",      sub: "6 markets · liquid staking",    color: "#6ee0f3", grade: "A",  score: 82, bars: [3,4,3,3,4], dims: [82,91,76,80,99.85], delta: "0",  trend: "flat", flag: null,                       flagText: null },
-  { id: 5, name: "Aura",         sub: "11 markets · fixed income",     color: "#f3c96e", grade: "A",  score: 78, bars: [3,3,3,3,4], dims: [78,80,74,76,99.90], delta: "+3", trend: "up", flag: null,                         flagText: null },
-  { id: 6, name: "Felix",        sub: "4 markets · metals & FX",       color: "#e87f7f", grade: "B",  score: 71, bars: [3,3,2,3,4], dims: [74,72,58,72,99.76], delta: "-1", trend: "dn", flag: "warn",                       flagText: "ORACLE DEV" },
-  { id: 7, name: "Dreamcash",    sub: "9 markets · culture, sports",   color: "#9d7eff", grade: "B",  score: 66, bars: [2,3,3,2,4], dims: [62,70,66,58,99.80], delta: "+4", trend: "up", flag: null,                         flagText: null },
-  { id: 8, name: "Markets",      sub: "18 markets · long-tail crypto", color: "#7ef3d0", grade: "B",  score: 62, bars: [3,2,3,2,3], dims: [70,58,68,56,98.94], delta: "-2", trend: "dn", flag: "warn",                       flagText: "LOW STAKE" },
-  { id: 9, name: "Parabol",      sub: "3 markets · prediction",        color: "#ff8e5a", grade: "C",  score: 48, bars: [2,2,2,2,3], dims: [52,44,48,42,99.22], delta: "-4", trend: "dn", flag: "bad",                        flagText: "HALT RISK" },
-];
+/* ════════ Scoreboard table — LIVE DATA from /hip3radar/api/all ════════ */
 
+const DEPLOYER_META = {
+  hl:    { display: "Hyperliquid",       sub: "native L1 perp markets",      color: "#7ef3a0" },
+  xyz:   { display: "trade[XYZ]",        sub: "synthetic US equities",        color: "#7ef3a0" },
+  vntl:  { display: "Ventuals",          sub: "pre-IPO perps",                color: "#b79cff" },
+  flx:   { display: "Felix Exchange",    sub: "synthetic stocks",             color: "#ffb648" },
+  hyna:  { display: "HyENA",             sub: "long-tail crypto perps",       color: "#6ee0f3" },
+  km:    { display: "Markets by Kinetiq",sub: "international stocks",         color: "#f3c96e" },
+  cash:  { display: "dreamcash",         sub: "varied perps",                 color: "#9d7eff" },
+  para:  { display: "Paragon",           sub: "index products",               color: "#7ef3d0" },
+  abcd:  { display: "ABCDEx",            sub: "—",                            color: "#ff8e5a" },
+};
+
+function safetyGradeJS(rs) {
+  if (rs == null) return { rating: null, grade: "—" };
+  const r = Math.max(0, Math.min(100, 100 - rs));
+  let g;
+  if (r >= 90) g = "AA";
+  else if (r >= 80) g = "A";
+  else if (r >= 70) g = "B+";
+  else if (r >= 60) g = "B";
+  else if (r >= 50) g = "C";
+  else if (r >= 30) g = "D";
+  else g = "F";
+  return { rating: Math.round(r * 10) / 10, grade: g };
+}
 function gradeClass(g) {
-  if (g === "AA") return "grade-aa";
-  if (g === "A")  return "grade-a";
-  if (g === "B")  return "grade-b";
-  if (g === "C")  return "grade-c";
+  if (g === "AA")    return "grade-aa";
+  if (g === "A")     return "grade-a";
+  if (g === "B+" || g === "B") return "grade-b";
+  if (g === "C")     return "grade-c";
+  if (g === "D")     return "grade-d";
   return "grade-d";
 }
-function trendArrow(t) {
-  if (t === "up")   return "▲";
-  if (t === "dn")   return "▼";
-  return "─";
-}
-function minibarHtml(bars) {
-  // bars is [0..4] values for 5 dimensions
-  return `<span class="minibar">${bars.map(b => {
-    const cls = b >= 4 ? "on" : b >= 3 ? "on" : b >= 2 ? "warn" : "bad";
-    return `<i class="${cls}" style="height:${4 + b*3}px"></i>`;
-  }).join("")}</span>`;
+function dimVal(v) { return v == null ? "—" : Math.round(v); }
+function dimBar(v) {
+  if (v == null) return "";
+  const b = v >= 90 ? 4 : v >= 75 ? 3 : v >= 50 ? 2 : 1;
+  const cls = b >= 4 ? "on" : b >= 3 ? "on" : b >= 2 ? "warn" : "bad";
+  return `<span class="minibar"><i class="${cls}" style="height:${4 + b*3}px"></i></span>`;
 }
 
-const sbBody = document.getElementById("sbBody");
-if (sbBody) {
-  sbBody.innerHTML = DEPLOYERS.map((d, i) => `
-    <tr>
+async function loadScoreboardLive() {
+  const sbBody = document.getElementById("sbBody");
+  if (!sbBody) return;
+  let snap;
+  try {
+    const r = await fetch("/hip3radar/api/all", { cache: "no-store" });
+    snap = await r.json();
+  } catch (e) {
+    sbBody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--ink-3);font-family:var(--mono);">Could not load live data — check /status</td></tr>`;
+    return;
+  }
+  const byDex = snap.by_dex || {};
+  // Aggregate per dex
+  const rows = Object.entries(byDex).map(([dex, markets]) => {
+    if (!markets.length) return null;
+    const meta = DEPLOYER_META[dex] || { display: dex.toUpperCase(), sub: `${markets.length} markets`, color: "#7ef3a0" };
+    const risks = markets.map(m => m.risk_score).filter(v => v != null);
+    const avgRisk = risks.length ? risks.reduce((a,b) => a+b, 0) / risks.length : null;
+    const sg = safetyGradeJS(avgRisk);
+
+    // Dimension proxies (each 0-100, higher = safer):
+    //   1 Oracle integrity = 100 - max(|oracle_drift|) clipped
+    //   2 Mark/oracle      = 100 - mean(|mark_oracle_spread|) clipped
+    //   3 Liquidity (OI/V) = 100 - mean(min(oi/vol, 30) / 30 * 100) clipped (lower OI/V = safer)
+    //   4 OI velocity      = 100 - mean(|oi_velocity_1h|) / 5 clipped
+    //   5 Uptime proxy     = 100 - frac of markets with risk > 60
+    const drifts = markets.map(m => Math.abs(m.oracle_drift_pct || 0));
+    const spreads = markets.map(m => Math.abs(m.mark_oracle_spread_pct || 0));
+    const oivols = markets.map(m => (m.day_ntl_vlm > 0 ? Math.min(m.open_interest / m.day_ntl_vlm, 30) : 0));
+    const velos = markets.map(m => Math.abs(m.oi_velocity_1h || 0));
+    const critFrac = markets.filter(m => (m.risk_score || 0) >= 60).length / markets.length;
+    const dim1 = Math.max(0, 100 - (drifts.length ? Math.max(...drifts) * 4 : 0));
+    const dim2 = Math.max(0, 100 - (spreads.reduce((a,b)=>a+b,0) / spreads.length) * 6);
+    const dim3 = Math.max(0, 100 - (oivols.reduce((a,b)=>a+b,0) / oivols.length / 30) * 100);
+    const dim4 = Math.max(0, 100 - (velos.reduce((a,b)=>a+b,0) / velos.length / 5));
+    const dim5 = Math.max(0, 100 - critFrac * 100);
+
+    // Flag: any market with risk >= 60 → critical badge
+    let flag = null, flagText = null;
+    const critMarkets = markets.filter(m => (m.risk_score || 0) >= 60).sort((a,b) => b.risk_score - a.risk_score);
+    if (critMarkets.length > 0) {
+      flag = "bad";
+      flagText = `CRIT: ${critMarkets[0].coin}`;
+    } else {
+      const warnMarkets = markets.filter(m => (m.risk_score || 0) >= 40).sort((a,b) => b.risk_score - a.risk_score);
+      if (warnMarkets.length > 0) {
+        flag = "warn";
+        flagText = `WARN: ${warnMarkets[0].coin}`;
+      }
+    }
+
+    return { dex, meta, sg, dims: [dim1, dim2, dim3, dim4, dim5], avgRisk, marketCount: markets.length, flag, flagText };
+  }).filter(Boolean).sort((a,b) => (b.sg.rating || 0) - (a.sg.rating || 0));
+
+  sbBody.innerHTML = rows.map((r, i) => `
+    <tr onclick="window.location.href='/deployer/${r.dex}'" style="cursor:pointer;">
       <td class="left sb-rank">${String(i+1).padStart(2,"0")}</td>
       <td class="left">
         <div class="sb-name">
-          <div class="sb-logo" style="background:linear-gradient(135deg, ${d.color}, ${d.color}55); color:#0b0e0c; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:13px; font-weight:600;">${d.name.replace(/\[.*?\]/g,"").charAt(0).toUpperCase()}</div>
-          <div><b>${d.name}</b><small>${d.sub}</small></div>
+          <div class="sb-logo" style="background:linear-gradient(135deg, ${r.meta.color}, ${r.meta.color}55); color:#0b0e0c; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:13px; font-weight:600;">${r.meta.display.charAt(0).toUpperCase()}</div>
+          <div><b>${r.meta.display}</b><small>${r.marketCount} markets · ${r.meta.sub}</small></div>
         </div>
       </td>
-      <td><span class="sb-grade ${gradeClass(d.grade)}">${d.grade}</span><span style="color:var(--ink-3);margin-left:8px;">${d.score}</span></td>
-      <td>${d.dims[0]}${minibarHtml([Math.round(d.dims[0]/25)])}</td>
-      <td>${d.dims[1]}${minibarHtml([Math.round(d.dims[1]/25)])}</td>
-      <td>${d.dims[2]}${minibarHtml([Math.round(d.dims[2]/25)])}</td>
-      <td>${d.dims[3]}${minibarHtml([Math.round(d.dims[3]/25)])}</td>
-      <td>${d.dims[4].toFixed(2)}%</td>
-      <td><span class="sb-trend ${d.trend}">${trendArrow(d.trend)} ${d.delta}</span></td>
-      <td>${d.flag ? `<span class="sb-flag ${d.flag}">${d.flagText}</span>` : `<span style="color:var(--ink-3);">—</span>`}</td>
+      <td><span class="sb-grade ${gradeClass(r.sg.grade)}">${r.sg.grade}</span><span style="color:var(--ink-3);margin-left:8px;">${r.sg.rating != null ? r.sg.rating.toFixed(0) : '—'}</span></td>
+      <td>${dimVal(r.dims[0])}${dimBar(r.dims[0])}</td>
+      <td>${dimVal(r.dims[1])}${dimBar(r.dims[1])}</td>
+      <td>${dimVal(r.dims[2])}${dimBar(r.dims[2])}</td>
+      <td>${dimVal(r.dims[3])}${dimBar(r.dims[3])}</td>
+      <td>${dimVal(r.dims[4])}%</td>
+      <td><span style="color:var(--ink-3);font-family:var(--mono);font-size:11px;">live</span></td>
+      <td>${r.flag ? `<span class="sb-flag ${r.flag}">${r.flagText}</span>` : `<span style="color:var(--ink-3);">—</span>`}</td>
     </tr>
   `).join("");
 }
+loadScoreboardLive();
+setInterval(loadScoreboardLive, 60000);
 
 /* ════════ TWEAKS / EDITMODE ════════ */
 const ACCENTS = {

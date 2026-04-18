@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Status — HIP3Radar</title>
+<meta name="description" content="Real-time service status for HIP3Radar — polling service, Telegram bot, public API, Flask app, Cloudflare tunnel, email delivery.">
+<link rel="icon" type="image/gif" href="/favicon.gif">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
+<style>
+  :root {
+    --accent:#7ef3a0; --accent-ink:#0b1510; --warn:#ffb648; --danger:#ff6b6b;
+    --bg:#0a0c0b; --surface:#11140f; --surface-2:#161a13;
+    --line:#1f2620; --line-2:#2a332b;
+    --ink:#e8ece4; --ink-2:#a8b0a4; --ink-3:#6a7368;
+    --sans:"Geist",system-ui,sans-serif; --mono:"Geist Mono",ui-monospace,monospace; --serif:"Instrument Serif",serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:var(--accent-ink)}
+  .nav{position:sticky;top:0;z-index:40;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 28px;border-bottom:1px solid var(--line);background:rgba(10,12,11,0.85);backdrop-filter:blur(14px)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px}
+  .brand-mark{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 50% 50%,var(--accent) 0 2px,transparent 3px),radial-gradient(circle at 50% 50%,transparent 0 8px,var(--accent) 9px 10px,transparent 11px),radial-gradient(circle at 50% 50%,transparent 0 5px,var(--line-2) 5px 5.5px,transparent 6px);position:relative}
+  .brand-mark::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0deg,var(--accent) 60deg,transparent 120deg,transparent 360deg);mix-blend-mode:screen;opacity:0.7;animation:sweep 3.8s linear infinite}
+  @keyframes sweep{to{transform:rotate(360deg)}}
+  .nav-center{display:flex;gap:4px;font-family:var(--mono);font-size:12.5px}
+  .nav-center a{padding:8px 14px;border-radius:999px;color:var(--ink-2);transition:all 160ms}
+  .nav-center a:hover{background:var(--surface);color:var(--ink)}
+  .nav-center a.active{background:var(--surface-2);color:var(--ink)}
+  .nav-right{display:flex;justify-content:flex-end;gap:10px;align-items:center}
+  .btn{font-family:var(--mono);font-size:12.5px;padding:9px 16px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink);transition:all 160ms}
+  .btn:hover{border-color:var(--ink-2)}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
+  main{max-width:980px;margin:0 auto}
+  .hero{padding:72px 56px 40px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink-3);margin-bottom:16px;display:inline-flex;align-items:center;gap:8px}
+  .eyebrow .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  h1{font-family:var(--sans);font-size:clamp(32px,4vw,52px);line-height:1.0;letter-spacing:-0.025em;font-weight:500;margin:0 0 14px}
+  h1 em{font-family:var(--serif);font-style:italic;color:var(--ink-2)}
+  .lead{font-size:16px;color:var(--ink-2);margin:0;max-width:60ch;line-height:1.55}
+  .body-wrap{padding:40px 56px}
+  .overall-card{padding:24px 28px;border:1px solid var(--accent);background:linear-gradient(180deg,rgba(126,243,160,0.06),transparent 60%);margin-bottom:32px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .overall-card.degraded{border-color:var(--warn);background:linear-gradient(180deg,rgba(255,182,72,0.08),transparent 60%)}
+  .overall-card.down{border-color:var(--danger);background:linear-gradient(180deg,rgba(255,107,107,0.08),transparent 60%)}
+  .overall-card .lbl{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.12em}
+  .overall-card .val{font-size:28px;font-weight:500;letter-spacing:-0.01em;color:var(--accent);margin-top:4px}
+  .overall-card.degraded .val{color:var(--warn)}
+  .overall-card.down .val{color:var(--danger)}
+  .check-list{border:1px solid var(--line);background:var(--surface)}
+  .check{display:grid;grid-template-columns:auto 1fr auto auto;gap:18px;align-items:center;padding:18px 24px;border-bottom:1px solid var(--line);font-family:var(--mono)}
+  .check:last-child{border-bottom:0}
+  .check .led{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .check.down .led{background:var(--danger);box-shadow:0 0 8px var(--danger)}
+  .check.degraded .led{background:var(--warn);box-shadow:0 0 8px var(--warn)}
+  .check .name{color:var(--ink);font-size:14px;font-family:var(--sans);font-weight:500}
+  .check .detail{color:var(--ink-3);font-size:11.5px}
+  .check .stat{color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:0.12em;font-weight:600}
+  .check.down .stat{color:var(--danger)}
+  .check.degraded .stat{color:var(--warn)}
+  .meta{margin-top:24px;color:var(--ink-3);font-family:var(--mono);font-size:11px;letter-spacing:0.05em}
+  footer{border-top:1px solid var(--line);padding:28px 56px;color:var(--ink-3);font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  @media (max-width:680px){
+    .nav-center{display:none}
+    .hero,.body-wrap{padding:32px 22px}
+    h1{font-size:28px}
+    .check{grid-template-columns:auto 1fr auto;padding:14px 18px}
+    .check .stat{display:none}
+    footer{padding:20px 22px}
+  }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand"><div class="brand-mark"></div><b>HIP3Radar</b></a>
+  <div class="nav-center">
+    <a href="/#scoreboard">Scoreboard</a><a href="/#badge">Badge</a>
+    <a href="/#methodology">Methodology</a><a href="/incidents">Incidents</a>
+    <a href="/#alerts">Alerts</a><a href="/docs">Docs</a>
+    <a href="/#pricing">Pricing</a><a href="/status" class="active">Status</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn" href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">Get alerts</a>
+    <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">Open scoreboard →</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span> live · auto-refreshed every 30s</div>
+    <h1>System status. <em>Right now.</em></h1>
+    <p class="lead">Real-time health of every HIP3Radar service — the polling engine, the Telegram bot, the public API, the Cloudflare tunnel, email delivery. No incident page yet because there's been no incident yet.</p>
+  </div>
+  <div class="body-wrap">
+    <div id="overall" class="overall-card">
+      <div>
+        <div class="lbl">Overall status</div>
+        <div class="val" id="overall-val">Checking…</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--ink-3);">Last check: <span id="overall-ts">—</span></div>
+    </div>
+    <div class="check-list" id="checks"></div>
+    <div class="meta">All checks run live against production. No history retained yet — coming soon.</div>
+  </div>
+</main>
+<footer>
+  <div>HIP3Radar — independent infrastructure for the Hyperliquid ecosystem</div>
+  <a href="/" style="color:var(--ink-2);">← back to home</a>
+</footer>
+<script>
+async function load(){
+  try {
+    const r = await fetch('/api/status', {cache:'no-store'});
+    const d = await r.json();
+    const ovd = document.getElementById('overall');
+    const ovv = document.getElementById('overall-val');
+    ovd.classList.remove('degraded','down');
+    if (d.overall === 'down') { ovd.classList.add('down'); ovv.textContent = 'Down'; }
+    else if (d.overall === 'degraded') { ovd.classList.add('degraded'); ovv.textContent = 'Degraded'; }
+    else { ovv.textContent = 'All systems operational'; }
+    document.getElementById('overall-ts').textContent = new Date(d.ts*1000).toLocaleString();
+    document.getElementById('checks').innerHTML = d.checks.map(c => `
+      <div class="check ${c.status}">
+        <div class="led"></div>
+        <div class="name">${c.name}<div class="detail">${c.detail||''}</div></div>
+        <div></div>
+        <div class="stat">${c.status === 'ok' ? 'Operational' : c.status === 'degraded' ? 'Degraded' : 'Down'}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    document.getElementById('overall-val').textContent = 'Unable to fetch status';
+    document.getElementById('overall').classList.add('down');
+  }
+}
+load(); setInterval(load, 30000);
+</script>
+</body>
+</html>

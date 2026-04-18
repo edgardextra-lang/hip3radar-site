@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Changelog — HIP3Radar</title>
+<meta name="description" content="HIP3Radar release notes — what shipped, what changed, what's next.">
+<link rel="icon" type="image/gif" href="/favicon.gif">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
+<style>
+  :root{--accent:#7ef3a0;--accent-ink:#0b1510;--warn:#ffb648;--danger:#ff6b6b;--bg:#0a0c0b;--surface:#11140f;--surface-2:#161a13;--line:#1f2620;--line-2:#2a332b;--ink:#e8ece4;--ink-2:#a8b0a4;--ink-3:#6a7368;--sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Instrument Serif",serif}
+  *{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}body{overflow-x:hidden}a{color:inherit;text-decoration:none}::selection{background:var(--accent);color:var(--accent-ink)}
+  .nav{position:sticky;top:0;z-index:40;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 28px;border-bottom:1px solid var(--line);background:rgba(10,12,11,0.85);backdrop-filter:blur(14px)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px}
+  .brand-mark{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 50% 50%,var(--accent) 0 2px,transparent 3px),radial-gradient(circle at 50% 50%,transparent 0 8px,var(--accent) 9px 10px,transparent 11px),radial-gradient(circle at 50% 50%,transparent 0 5px,var(--line-2) 5px 5.5px,transparent 6px);position:relative}
+  .brand-mark::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0deg,var(--accent) 60deg,transparent 120deg,transparent 360deg);mix-blend-mode:screen;opacity:0.7;animation:sweep 3.8s linear infinite}
+  @keyframes sweep{to{transform:rotate(360deg)}}
+  .nav-center{display:flex;gap:4px;font-family:var(--mono);font-size:12.5px}
+  .nav-center a{padding:8px 14px;border-radius:999px;color:var(--ink-2);transition:all 160ms}
+  .nav-center a:hover{background:var(--surface);color:var(--ink)}
+  .nav-center a.active{background:var(--surface-2);color:var(--ink)}
+  .nav-right{display:flex;justify-content:flex-end;gap:10px}
+  .btn{font-family:var(--mono);font-size:12.5px;padding:9px 16px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink);transition:all 160ms}
+  .btn:hover{border-color:var(--ink-2)}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
+  main{max-width:880px;margin:0 auto}
+  .hero{padding:72px 56px 40px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--ink-3);margin-bottom:16px;display:inline-flex;align-items:center;gap:8px}
+  .eyebrow .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent)}
+  h1{font-family:var(--sans);font-size:clamp(32px,4vw,52px);line-height:1.0;letter-spacing:-0.025em;font-weight:500;margin:0 0 14px}
+  h1 em{font-family:var(--serif);font-style:italic;color:var(--ink-2)}
+  .lead{font-size:16px;color:var(--ink-2);max-width:60ch;margin:0;line-height:1.55}
+  .body-wrap{padding:40px 56px}
+  .release{padding:28px 0;border-bottom:1px solid var(--line)}
+  .release:last-child{border-bottom:0}
+  .release-head{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+  .release-head h2{font-family:var(--sans);font-size:22px;font-weight:500;letter-spacing:-0.01em;margin:0;line-height:1.1}
+  .release-tag{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.12em}
+  .release-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;background:rgba(126,243,160,0.14);color:var(--accent);border:1px solid rgba(126,243,160,0.3)}
+  .release-pill.minor{background:rgba(168,176,164,0.08);color:var(--ink-2);border-color:var(--line-2)}
+  .release-pill.major{background:rgba(255,182,72,0.14);color:var(--warn);border-color:rgba(255,182,72,0.3)}
+  .release ul{list-style:none;padding:0;margin:0}
+  .release li{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:9px 0;font-size:14.5px;color:var(--ink-2);line-height:1.55}
+  .release li::before{content:"+";color:var(--accent);font-weight:600;font-family:var(--mono)}
+  .release li.fix::before{content:"·";color:var(--warn)}
+  .release li.remove::before{content:"−";color:var(--danger)}
+  .release li b{color:var(--ink);font-weight:500}
+  footer{border-top:1px solid var(--line);padding:28px 56px;color:var(--ink-3);font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  @media (max-width:680px){.nav-center{display:none}.hero,.body-wrap{padding:32px 22px}h1{font-size:28px}footer{padding:20px 22px}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="brand"><div class="brand-mark"></div><b>HIP3Radar</b></a>
+  <div class="nav-center">
+    <a href="/#scoreboard">Scoreboard</a><a href="/#badge">Badge</a><a href="/#methodology">Methodology</a>
+    <a href="/incidents">Incidents</a><a href="/#alerts">Alerts</a><a href="/docs">Docs</a>
+    <a href="/#pricing">Pricing</a><a href="/changelog" class="active">Changelog</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn" href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">Get alerts</a>
+    <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">Open scoreboard →</a>
+  </div>
+</nav>
+<main>
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span> public release notes</div>
+    <h1>What changed. <em>What's next.</em></h1>
+    <p class="lead">Public log of every meaningful release. Build-in-public, in chronological order, newest first.</p>
+  </div>
+  <div class="body-wrap">
+
+    <div class="release">
+      <div class="release-head">
+        <h2>v0.4 — Trust infrastructure</h2>
+        <span class="release-tag">2026-04-18</span>
+        <span class="release-pill major">major</span>
+      </div>
+      <ul>
+        <li><b>New design system.</b> Bloomberg-terminal aesthetic. Geist Mono throughout. Green accent (#7ef3a0) replaces pink.</li>
+        <li><b>Per-deployer scorecard pages</b> at <code>/deployer/&lt;slug&gt;</code> — aggregate grade, market table, embed snippet, "Get Verified" CTA.</li>
+        <li><b>Per-market detail pages</b> at <code>/market/&lt;dex&gt;/&lt;coin&gt;</code> — full scorecard, 24h history chart, signal breakdown.</li>
+        <li><b>Embeddable badge widget</b> via <code>/badge.js</code> — drop the <code>&lt;hip3radar-badge&gt;</code> element on any market page.</li>
+        <li><b>Letter grades</b> (AA / A / B+ / B / C / D / F) computed from composite risk score on every market.</li>
+        <li><b>Verified Deployer</b> tier ($2,500+/mo) replaces generic Enterprise — badge embed rights, custom oracle integration, dedicated incident response.</li>
+        <li><b>Status page</b> at <code>/status</code> — live health for polling, bot, API, tunnel, email.</li>
+        <li><b>OpenAPI 3.1 spec</b> at <code>/openapi.json</code>. Interactive docs at <code>/docs</code>.</li>
+        <li><b>Animated GIF favicon</b> with radar sweep.</li>
+        <li><b>Search + dex filter</b> on the live scoreboard.</li>
+        <li class="fix">Pricing rebalanced: Pro $29 → $49, Team $199 → $499, Enterprise → Verified Deployer $2,500+.</li>
+        <li class="remove">Sticky bottom Telegram CTA removed (moved to hero).</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="release-head">
+        <h2>v0.3 — Telegram alerts</h2>
+        <span class="release-tag">2026-04-17</span>
+        <span class="release-pill">minor</span>
+      </div>
+      <ul>
+        <li><b>Telegram alert bot</b> live at <code>@hip3radar_alerts_bot</code> — multi-user, custom thresholds, dex filter, 6h dedup per market.</li>
+        <li>Slash commands: <code>/start</code>, <code>/subscribe</code>, <code>/list</code>, <code>/unsubscribe</code>, <code>/threshold</code>, <code>/dex</code>, <code>/help</code>.</li>
+        <li>Inline-button onboarding (Warning 40+ / Critical 60+ presets).</li>
+        <li>Free during public beta. Telegram chat IDs stored in SQLite, deduped on insert.</li>
+        <li>Mobile optimization across all pages (480px + 360px breakpoints, 44px tap targets).</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="release-head">
+        <h2>v0.2 — Distribution + SEO</h2>
+        <span class="release-tag">2026-04-16</span>
+        <span class="release-pill">minor</span>
+      </div>
+      <ul>
+        <li><b>Domain</b> hip3radar.xyz live via named Cloudflare Tunnel with auto-TLS.</li>
+        <li><b>Custom domain email</b> on hip3radar.xyz with SPF + DKIM + DMARC alignment via Resend + Cloudflare Email Routing.</li>
+        <li><b>Dual-mode confirmation emails</b>: instant plain-text "you're on the list" + scheduled rich HTML follow-up.</li>
+        <li><b>llms.txt + llms-full.txt</b> for LLM agent discovery.</li>
+        <li><b>Dynamic sitemap.xml</b> (330+ URLs including every market and incident).</li>
+        <li>JSON-LD structured data (Organization, SoftwareApplication, FAQPage) for rich search results.</li>
+        <li>Explicit allow rules for GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, etc.</li>
+        <li>OG link preview cards across iMessage / Telegram / Slack / Discord / Twitter.</li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="release-head">
+        <h2>v0.1 — Public launch</h2>
+        <span class="release-tag">2026-04-15</span>
+        <span class="release-pill">minor</span>
+      </div>
+      <ul>
+        <li><b>Risk surveillance engine</b> for every Hyperliquid native + HIP-3 perp market.</li>
+        <li>Polls 325+ markets across 9 dexes every 60 seconds.</li>
+        <li>5-signal composite scoring: oracle drift vs CEX consensus, mark-oracle spread, OI velocity (1h + 24h), OI/volume ratio, funding extremity.</li>
+        <li>Public CORS-enabled JSON API at <code>/hip3radar/api/state</code> &amp; <code>/api/all</code>.</li>
+        <li>JELLY incident replay at <code>/incidents</code> with minute-by-minute Chart.js visualization.</li>
+        <li>Pricing page with waitlist (Supabase + EmailJS).</li>
+        <li>Twitter banner, OG image, profile pic — full brand kit.</li>
+        <li>Watchdog auto-restart for 24/7 uptime across polling service, public Flask app, Telegram bot, named Cloudflare tunnel.</li>
+      </ul>
+    </div>
+
+  </div>
+</main>
+<footer>
+  <div>HIP3Radar — independent infrastructure for the Hyperliquid ecosystem</div>
+  <a href="/" style="color:var(--ink-2);">← back to home</a>
+</footer>
+</body>
+</html>
