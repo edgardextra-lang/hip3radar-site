@@ -1092,12 +1092,16 @@
   <div class="nav-center">
     <a href="#scoreboard">Scoreboard</a>
     <a href="#badge">Badge</a>
-    <a href="#api">API</a>
     <a href="#methodology">Methodology</a>
-    <a href="#docs">Docs</a>
+    <a href="/incidents">Incidents</a>
+    <a href="#alerts">Alerts</a>
+    <a href="/docs">API docs</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/changelog">Changelog</a>
+    <a href="/status">Status</a>
   </div>
   <div class="nav-right">
-    <span class="pill-live"><span class="dot"></span>Scoring 247 markets · 19 deployers</span>
+    <span class="pill-live"><span class="dot"></span>Scoring <span id="navMarketCount">—</span> markets · <span id="navDexCount">—</span> deployers</span>
     <a class="btn" href="#api">Get API key</a>
     <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">See the scoreboard →</a>
   </div>
@@ -1134,10 +1138,10 @@
       </div>
     </div>
     <div class="hero-meta">
-      <div><div class="k">Deployers rated</div><div class="v" id="mDep">19</div><div class="d">+3 this month</div></div>
-      <div><div class="k">Markets scored</div><div class="v" id="mMk">247</div><div class="d">+14 this week</div></div>
-      <div><div class="k">Avg rating</div><div class="v" id="mVol">A–</div><div class="d">↑ from B+</div></div>
-      <div><div class="k">On watchlist</div><div class="v" id="mOI">4</div><div class="d dn">oracle deviation</div></div>
+      <div><div class="k">Deployers rated</div><div class="v" id="mDep">—</div><div class="d" id="mDepSub">live · auto-refresh 60s</div></div>
+      <div><div class="k">Markets scored</div><div class="v" id="mMkt">—</div><div class="d" id="mMktSub">live · auto-refresh 60s</div></div>
+      <div><div class="k">Avg rating</div><div class="v" id="mAvg">—</div><div class="d" id="mAvgSub">across all dexes</div></div>
+      <div><div class="k">On watchlist</div><div class="v" id="mWatch">—</div><div class="d dn" id="mWatchSub">markets ≥ warning</div></div>
     </div>
   </div>
   <div class="hero-right">
@@ -1165,16 +1169,17 @@
     <div class="sb-toolbar">
       <div class="sb-search">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#a8b0a4"/><path d="M10 10 L13 13" stroke="#a8b0a4"/></svg>
-        <input placeholder="Filter deployers or markets…" />
-        <span style="color:var(--ink-3);font-size:11px;">⌘K</span>
+        <input id="sbSearch" placeholder="Search deployers or markets…" autocomplete="off" oninput="onSbSearch(this.value)" onkeydown="if(event.key==='Escape'){this.value='';onSbSearch('')}" />
+        <span style="color:var(--ink-3);font-size:11px;">⎋ to clear</span>
       </div>
-      <span class="sb-chip on">All</span>
-      <span class="sb-chip">Equities</span>
-      <span class="sb-chip">FX &amp; Commods</span>
-      <span class="sb-chip">Fixed Income</span>
-      <span class="sb-chip">Pre-IPO</span>
-      <span class="sb-chip">Culture</span>
-      <span class="sb-chip" style="margin-left:auto;">Live ● 12.4ms</span>
+      <span class="sb-chip on" data-cat="all" onclick="onSbCat(event,'all')">All</span>
+      <span class="sb-chip" data-cat="crypto" onclick="onSbCat(event,'crypto')">Crypto</span>
+      <span class="sb-chip" data-cat="equities" onclick="onSbCat(event,'equities')">Equities</span>
+      <span class="sb-chip" data-cat="fx" onclick="onSbCat(event,'fx')">FX</span>
+      <span class="sb-chip" data-cat="commods" onclick="onSbCat(event,'commods')">Commods</span>
+      <span class="sb-chip" data-cat="preipo" onclick="onSbCat(event,'preipo')">Pre-IPO</span>
+      <span class="sb-chip" data-cat="index" onclick="onSbCat(event,'index')">Indexes</span>
+      <span class="sb-chip" style="margin-left:auto;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);margin-right:6px;animation:pulse 1.8s infinite;"></span>Live · 60s</span>
     </div>
 
     <table class="sb-table">
@@ -1196,7 +1201,7 @@
     </table>
 
     <div class="sb-bottom">
-      <span>Showing 9 of 19 deployers · 247 markets scored</span>
+      <span>Showing <span id="sbShown">—</span> of <span id="sbTotal">—</span> deployers · <span id="sbMkts">—</span> markets scored</span>
       <span>Methodology v2.4 · <a href="#methodology" style="color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;">read the rubric ↗</a></span>
     </div>
 
@@ -1713,7 +1718,7 @@ console.log<span class="p">(</span>card.grade<span class="p">,</span> card.dimen
         <li>Full historical API access (90d)</li>
         <li>Email support</li>
       </ul>
-      <a class="tier-cta" href="https://hip3radar.xyz/#pricing" target="_blank" rel="noopener">Join the waitlist →</a>
+      <a class="tier-cta" href="#" onclick="event.preventDefault();openWaitlistModal(this.closest('.price-card').querySelector('.tier-name')?.textContent?.trim().toLowerCase() || 'general')">Join the waitlist →</a>
     </div>
 
     <!-- TEAM -->
@@ -1731,7 +1736,7 @@ console.log<span class="p">(</span>card.grade<span class="p">,</span> card.dimen
         <li>Full historical API (unlimited)</li>
         <li>Priority email support</li>
       </ul>
-      <a class="tier-cta" href="https://hip3radar.xyz/#pricing" target="_blank" rel="noopener">Join the waitlist →</a>
+      <a class="tier-cta" href="#" onclick="event.preventDefault();openWaitlistModal(this.closest('.price-card').querySelector('.tier-name')?.textContent?.trim().toLowerCase() || 'general')">Join the waitlist →</a>
     </div>
 
     <!-- VERIFIED DEPLOYER (featured) -->
@@ -1777,8 +1782,8 @@ console.log<span class="p">(</span>card.grade<span class="p">,</span> card.dimen
   </div>
   <div></div>
   <div class="cols">
-    <div class="col"><b>Product</b><a href="#scoreboard">Scoreboard</a><a href="#badge">Badge</a><a href="#api">API</a><a href="#">Status</a></div>
-    <div class="col"><b>Learn</b><a href="#methodology">Methodology</a><a href="/changelog">Changelog</a><a href="/status">Status</a></div>
+    <div class="col"><b>Product</b><a href="/hip3radar/" target="_blank" rel="noopener">Scoreboard</a><a href="#badge">Badge</a><a href="/docs">API docs</a><a href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">Telegram bot</a></div>
+    <div class="col"><b>Learn</b><a href="#methodology">Methodology</a><a href="/incidents">Incidents</a><a href="/changelog">Changelog</a><a href="/status">Status</a></div>
     <div class="col"><b>Co.</b><a href="https://x.com/hip3radar" target="_blank" rel="noopener">Twitter</a><a href="mailto:hello@hip3radar.xyz">hello@hip3radar.xyz</a></div>
   </div>
 </footer>
@@ -1937,21 +1942,35 @@ async function loadBarsLive() {
 loadBarsLive();
 setInterval(loadBarsLive, 60000);
 
-/* ════════ Hero counter tickers — LIVE DATA ════════ */
+/* ════════ Hero counter tickers + nav pill — LIVE DATA every 60s ════════ */
 async function loadHeroLive() {
-  const volEl = document.getElementById("mVol");
-  const oiEl = document.getElementById("mOI");
-  if (!volEl && !oiEl) return;
   try {
     const r = await fetch("/hip3radar/api/all", { cache: "no-store" });
     const snap = await r.json();
-    const totalVol = (snap.all_markets || []).reduce((sum, m) => sum + (m.day_ntl_vlm || 0), 0);
-    const totalOi = (snap.all_markets || []).reduce((sum, m) => sum + (m.open_interest || 0), 0);
-    if (volEl) volEl.textContent = fmtUsd(totalVol);
-    if (oiEl) oiEl.textContent = fmtUsd(totalOi);
+    const markets = snap.all_markets || [];
+    const dexCount = Object.keys(snap.by_dex || {}).length;
+    const marketCount = markets.length;
+    const risks = markets.map(m => m.risk_score).filter(v => v != null);
+    const avgRisk = risks.length ? risks.reduce((a,b)=>a+b,0)/risks.length : null;
+    const sg = (typeof safetyGradeJS === 'function') ? safetyGradeJS(avgRisk) : { rating: null, grade: "—" };
+    const watchlist = markets.filter(m => (m.risk_score || 0) >= 40).length;
+    const critList = markets.filter(m => (m.risk_score || 0) >= 60).length;
+
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set("mDep", dexCount);
+    set("mDepSub", `live · ${dexCount} active dexes`);
+    set("mMkt", marketCount);
+    set("mMktSub", "live · auto-refresh 60s");
+    set("mAvg", sg.grade);
+    set("mAvgSub", sg.rating != null ? `${sg.rating.toFixed(1)} / 100 across all dexes` : "across all dexes");
+    set("mWatch", watchlist);
+    set("mWatchSub", critList > 0 ? `${critList} critical · ${watchlist - critList} warning` : `${watchlist} markets ≥ warning`);
+    set("navMarketCount", marketCount);
+    set("navDexCount", dexCount);
   } catch (e) {
-    if (volEl) volEl.textContent = "—";
-    if (oiEl) oiEl.textContent = "—";
+    ["mDep","mMkt","mAvg","mWatch","navMarketCount","navDexCount"].forEach(id => {
+      const el = document.getElementById(id); if (el) el.textContent = "—";
+    });
   }
 }
 loadHeroLive();
@@ -1971,6 +1990,37 @@ const DEPLOYER_META = {
   para:  { display: "Paragon",           sub: "index products",               color: "#7ef3d0" },
   abcd:  { display: "ABCDEx",            sub: "—",                            color: "#ff8e5a" },
 };
+
+/* Category classifier — by dex + coin name pattern */
+const COMMODITY_TICKERS = new Set(["GOLD","XAU","XAG","SILVER","COPPER","BRENTOIL","CL","ALUMINIUM","CORN","WHEAT","SOYBEAN","NATGAS","PLATINUM","PALLADIUM"]);
+const FX_TICKERS = new Set(["EUR","JPY","GBP","CHF","AUD","NZD","CAD","DXY","CNY","HKD","KRW"]);
+const INDEX_TICKERS = new Set(["XYZ100","SPY","QQQ","JP225","KR200","EWJ","EWY","DIA","IWM","STOXX","FTSE","DAX","NIFTY"]);
+const PREIPO_TICKERS = new Set(["ANTHROPIC","SPACEX","OPENAI","DEFENSE","NUCLEAR","ROBOT","HYUNDAI","TENCENT","BYTEDANCE","STARLINK","STRIPE"]);
+
+function classifyMarket(m) {
+  const coin = (m.coin || "").toUpperCase();
+  const dex = (m.dex || "").toLowerCase();
+  if (PREIPO_TICKERS.has(coin)) return "preipo";
+  if (dex === "vntl") return "preipo";
+  if (COMMODITY_TICKERS.has(coin)) return "commods";
+  if (FX_TICKERS.has(coin)) return "fx";
+  if (INDEX_TICKERS.has(coin)) return "index";
+  if (dex === "hl" || dex === "hyna") return "crypto";
+  // Default for xyz/flx/km long-tail = equities (most are stock tickers)
+  return "equities";
+}
+
+let sbSearchQ = "";
+let sbCat = "all";
+let lastFullSnap = null;
+
+function onSbSearch(v) { sbSearchQ = (v || "").trim().toLowerCase(); renderScoreboard(); }
+function onSbCat(ev, cat) {
+  sbCat = cat;
+  document.querySelectorAll('.sb-toolbar .sb-chip[data-cat]').forEach(el => el.classList.remove("on"));
+  if (ev && ev.target) ev.target.classList.add("on");
+  renderScoreboard();
+}
 
 function safetyGradeJS(rs) {
   if (rs == null) return { rating: null, grade: "—" };
@@ -2008,11 +2058,50 @@ async function loadScoreboardLive() {
   try {
     const r = await fetch("/hip3radar/api/all", { cache: "no-store" });
     snap = await r.json();
+    lastFullSnap = snap;
   } catch (e) {
     sbBody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--ink-3);font-family:var(--mono);">Could not load live data — check /status</td></tr>`;
     return;
   }
-  const byDex = snap.by_dex || {};
+  renderScoreboard();
+}
+
+function renderScoreboard() {
+  const snap = lastFullSnap;
+  const sbBody = document.getElementById("sbBody");
+  if (!snap || !sbBody) return;
+
+  // Apply category filter to underlying markets first
+  const allMarkets = snap.all_markets || [];
+  const filteredMarkets = (sbCat === "all")
+    ? allMarkets
+    : allMarkets.filter(m => classifyMarket(m) === sbCat);
+
+  // Apply search filter (matches deployer name OR market coin OR market name)
+  const matchedMarkets = sbSearchQ
+    ? filteredMarkets.filter(m => {
+        const meta = DEPLOYER_META[m.dex] || {};
+        return (m.coin || "").toLowerCase().includes(sbSearchQ)
+            || (m.name || "").toLowerCase().includes(sbSearchQ)
+            || (meta.display || m.dex || "").toLowerCase().includes(sbSearchQ);
+      })
+    : filteredMarkets;
+
+  // Group by dex
+  const byDex = {};
+  for (const m of matchedMarkets) {
+    if (!byDex[m.dex]) byDex[m.dex] = [];
+    byDex[m.dex].push(m);
+  }
+
+  // Update bottom counter
+  const totalDex = Object.keys(snap.by_dex || {}).length;
+  const totalMarkets = (snap.all_markets || []).length;
+  const shownDex = Object.keys(byDex).length;
+  document.getElementById("sbShown").textContent = shownDex;
+  document.getElementById("sbTotal").textContent = totalDex;
+  document.getElementById("sbMkts").textContent = `${matchedMarkets.length}${matchedMarkets.length !== totalMarkets ? ' of ' + totalMarkets : ''}`;
+
   // Aggregate per dex
   const rows = Object.entries(byDex).map(([dex, markets]) => {
     if (!markets.length) return null;
@@ -2129,6 +2218,267 @@ document.querySelectorAll("#swAccent .sw").forEach(s =>
 );
 document.getElementById("density").addEventListener("change", e => setTweak("density", e.target.value));
 document.getElementById("serifItalics").addEventListener("change", e => setTweak("serifItalics", e.target.value === "true"));
+</script>
+
+<!-- ════════ WAITLIST MODAL — Supabase-backed ════════ -->
+<style>
+  .wl-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(5,8,7,0.85); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.22s;
+  }
+  .wl-overlay.show { display: flex; opacity: 1; }
+  .wl-modal {
+    width: min(460px, calc(100% - 28px));
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    border: 1px solid var(--accent);
+    box-shadow: 0 24px 64px -20px rgba(126,243,160,0.4),
+                0 8px 24px rgba(0,0,0,0.6);
+    padding: 32px 30px 26px; position: relative; border-radius: 0;
+    transform: translateY(12px) scale(0.97);
+    transition: transform 0.22s;
+  }
+  .wl-overlay.show .wl-modal { transform: translateY(0) scale(1); }
+  .wl-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; display: flex;
+    align-items: center; justify-content: center;
+    background: transparent; border: 1px solid var(--line-2);
+    color: var(--ink-2); font-size: 18px; line-height: 1;
+    cursor: pointer; transition: all 0.15s; font-family: var(--mono);
+  }
+  .wl-close:hover { background: var(--surface-2); color: var(--ink); border-color: var(--ink-3); }
+  .wl-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(126,243,160,0.1);
+    border: 1px solid rgba(126,243,160,0.3);
+    padding: 5px 11px; margin-bottom: 16px;
+  }
+  .wl-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .wl-title {
+    font-family: var(--sans); font-size: 26px; font-weight: 500;
+    line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--ink); margin: 0 0 10px;
+  }
+  .wl-title em { font-family: var(--serif); font-style: italic; color: var(--ink-2); }
+  .wl-sub {
+    font-size: 13.5px; color: var(--ink-2); line-height: 1.55;
+    margin: 0 0 22px; font-family: var(--sans);
+  }
+  .wl-sub .plan-chip {
+    display: inline-block; padding: 2px 8px; border-radius: 0;
+    margin-left: 4px; font-family: var(--mono); font-size: 11px; font-weight: 500;
+    background: rgba(126,243,160,0.14); color: var(--accent);
+    border: 1px solid rgba(126,243,160,0.3);
+  }
+  .wl-input {
+    width: 100%; padding: 13px 16px;
+    background: var(--bg); border: 1px solid var(--line-2);
+    color: var(--ink); font-family: var(--mono); font-size: 13px;
+    outline: none; transition: border-color 0.15s;
+    border-radius: 0;
+  }
+  .wl-input::placeholder { color: var(--ink-3); }
+  .wl-input:focus { border-color: var(--accent); }
+  .wl-submit {
+    width: 100%; margin-top: 12px; padding: 13px 18px;
+    background: var(--accent); color: var(--accent-ink);
+    border: 1px solid var(--accent);
+    font-family: var(--mono); font-weight: 600; font-size: 13px;
+    letter-spacing: 0.04em; cursor: pointer;
+    transition: filter 0.15s; border-radius: 0;
+  }
+  .wl-submit:hover { filter: brightness(1.06); }
+  .wl-submit:active { transform: translateY(1px); }
+  .wl-submit:disabled { opacity: 0.55; cursor: not-allowed; filter: grayscale(0.2); }
+  .wl-note {
+    font-size: 11px; color: var(--ink-3);
+    text-align: center; margin-top: 14px; line-height: 1.55;
+    font-family: var(--mono);
+  }
+  .wl-error { color: var(--danger); font-size: 12px; margin-top: 8px; min-height: 14px; font-family: var(--mono); }
+  .wl-success { display: none; text-align: center; padding: 14px 0 6px; }
+  .wl-success.show { display: block; }
+  .wl-check {
+    width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 14px;
+    background: rgba(126,243,160,0.16);
+    border: 1.5px solid rgba(126,243,160,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: var(--accent);
+    animation: wl-pop 0.4s cubic-bezier(0.2, 1.4, 0.4, 1);
+  }
+  @keyframes wl-pop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .wl-success-title { font-family: var(--sans); font-size: 22px; font-weight: 500; color: var(--ink); margin: 0 0 8px; letter-spacing: -0.015em; }
+  .wl-success-title em { font-family: var(--serif); font-style: italic; color: var(--ink-2); }
+  .wl-success-sub { font-size: 13px; color: var(--ink-2); line-height: 1.55; margin: 0; font-family: var(--sans); }
+</style>
+
+<div id="wl-overlay" class="wl-overlay">
+  <div class="wl-modal">
+    <button class="wl-close" onclick="closeWaitlistModal()" aria-label="Close">×</button>
+    <div id="wl-form-view">
+      <div class="wl-badge"><span class="dot"></span> JOIN THE WAITLIST</div>
+      <h3 class="wl-title">First in line. <em>When access opens.</em></h3>
+      <p class="wl-sub">Get notified the moment paid tiers go live<span id="wl-plan-chip"></span></p>
+      <input type="email" id="wl-email" class="wl-input" placeholder="you@example.com" autocomplete="email" />
+      <button id="wl-submit-btn" class="wl-submit" onclick="submitWaitlist()">JOIN WAITLIST →</button>
+      <div id="wl-error" class="wl-error"></div>
+      <p class="wl-note">No spam. We only email about HIP3Radar access and major incidents.</p>
+    </div>
+    <div id="wl-success-view" class="wl-success">
+      <div class="wl-check">✓</div>
+      <h4 class="wl-success-title">You're <em>on the list.</em></h4>
+      <p class="wl-success-sub">Check your inbox — confirmation is on its way. We'll reach out the moment your tier opens.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════ Waitlist — Supabase-backed (same table as before: hip3radar_waitlist) ════════ */
+(function(){
+  var SUPABASE_URL   = 'https://rrowmfxcfeegtazmkvtf.supabase.co';
+  var SUPABASE_KEY   = 'sb_publishable_adcjSKP2wtoVXDt0l5mhnw_AoFpBgoa';
+  var SUPABASE_TABLE = 'hip3radar_waitlist';
+  var SEND_URL       = '/api/waitlist/send';
+
+  var PLAN_LABELS = {
+    general: '',
+    pro: 'Pro ($49/mo)',
+    team: 'Team ($499/mo)',
+    'verified deployer': 'Verified Deployer ($2,500+/mo)',
+    enterprise: 'Verified Deployer ($2,500+/mo)',
+  };
+  var currentPlan = 'general';
+
+  window.openWaitlistModal = function(plan){
+    currentPlan = (plan || 'general').toLowerCase();
+    var chip = document.getElementById('wl-plan-chip');
+    if (chip) {
+      var label = PLAN_LABELS[currentPlan] || '';
+      chip.innerHTML = label ? ' · <span class="plan-chip">' + label + '</span>' : '';
+    }
+    var f = document.getElementById('wl-form-view');
+    var s = document.getElementById('wl-success-view');
+    if (f) f.style.display = '';
+    if (s) s.classList.remove('show');
+    var err = document.getElementById('wl-error'); if (err) err.textContent = '';
+    var btn = document.getElementById('wl-submit-btn'); if (btn) { btn.disabled = false; btn.innerHTML = 'JOIN WAITLIST &rarr;'; }
+    var email = document.getElementById('wl-email'); if (email) email.value = '';
+    document.getElementById('wl-overlay').classList.add('show');
+    setTimeout(function(){ if (email) email.focus(); }, 140);
+    if (window.umami && typeof umami.track === 'function') umami.track('waitlist-open', { plan: currentPlan });
+  };
+  window.closeWaitlistModal = function(){ document.getElementById('wl-overlay').classList.remove('show'); };
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeWaitlistModal(); });
+  document.getElementById('wl-overlay').addEventListener('click', function(e){ if (e.target.id === 'wl-overlay') closeWaitlistModal(); });
+
+  window.submitWaitlist = async function(){
+    var emailInput = document.getElementById('wl-email');
+    var errEl = document.getElementById('wl-error');
+    var btn = document.getElementById('wl-submit-btn');
+    var email = (emailInput.value || '').trim().toLowerCase();
+    errEl.textContent = '';
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; return; }
+    btn.disabled = true; btn.textContent = 'Joining…';
+
+    var planLabel = PLAN_LABELS[currentPlan] || 'HIP3Radar Waitlist';
+    var callSign = 'HIP3Radar:' + currentPlan;
+
+    var supabaseOk = false;
+    try {
+      var resp = await fetch(SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          email: email,
+          plan: currentPlan,
+          call_sign: callSign,
+          source: 'hip3radar.xyz',
+          created_at: new Date().toISOString()
+        })
+      });
+      supabaseOk = resp.ok;
+      if (!resp.ok) {
+        var txt = await resp.text();
+        if (resp.status === 409 || /duplicate/i.test(txt)) supabaseOk = true;
+        else console.warn('Supabase insert failed:', resp.status, txt);
+      }
+    } catch (e) { console.warn('Supabase insert error:', e); }
+
+    if (!supabaseOk) {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false; btn.innerHTML = 'JOIN WAITLIST &rarr;';
+      return;
+    }
+
+    // Best-effort confirmation email via the Flask /api/waitlist/send proxy
+    try {
+      await fetch(SEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, plan: currentPlan, plan_label: planLabel || 'HIP3Radar Waitlist' })
+      });
+    } catch (e) { console.warn('Email send error:', e); }
+
+    document.getElementById('wl-form-view').style.display = 'none';
+    document.getElementById('wl-success-view').classList.add('show');
+    if (window.umami && typeof umami.track === 'function') umami.track('waitlist-submit', { plan: currentPlan });
+    setTimeout(closeWaitlistModal, 4500);
+  };
+})();
+
+/* ════════ Animated favicon — JS-driven so it works in Chrome ════════ */
+(function(){
+  // Pre-render 32 frames to canvas, swap as <link rel="icon"> every 80ms
+  if (typeof document === 'undefined' || !document.createElement) return;
+  var SIZE = 32, FRAMES = 32, INTERVAL = 80;
+  var canvas = document.createElement('canvas'); canvas.width = SIZE; canvas.height = SIZE;
+  var ctx = canvas.getContext('2d'); if (!ctx) return;
+
+  // Find or create the favicon <link>
+  var link = document.querySelector('link[rel="icon"]');
+  if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+
+  var frameUrls = [];
+  function renderFrame(angleDeg) {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    // Dark background
+    ctx.fillStyle = '#0a0c0b';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+    var cx = SIZE / 2, cy = SIZE / 2;
+    var rOuter = SIZE * 0.42, rInner = SIZE * 0.16;
+    // Outer green disc
+    ctx.beginPath(); ctx.arc(cx, cy, rOuter, 0, Math.PI * 2); ctx.fillStyle = '#7ef3a0'; ctx.fill();
+    // Sweep wedge — semi-transparent white
+    var rad = angleDeg * Math.PI / 180;
+    var sweep = 60 * Math.PI / 180;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, rOuter, rad, rad + sweep);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,0.42)';
+    ctx.fill();
+    // Inner dark pupil
+    ctx.beginPath(); ctx.arc(cx, cy, rInner, 0, Math.PI * 2); ctx.fillStyle = '#0b1510'; ctx.fill();
+    return canvas.toDataURL('image/png');
+  }
+  for (var i = 0; i < FRAMES; i++) frameUrls.push(renderFrame((i / FRAMES) * 360 - 90));
+
+  var idx = 0;
+  setInterval(function(){
+    link.href = frameUrls[idx];
+    idx = (idx + 1) % FRAMES;
+  }, INTERVAL);
+})();
 </script>
 
 </body>
