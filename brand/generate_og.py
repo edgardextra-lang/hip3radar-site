@@ -11,14 +11,14 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 # Brand tokens
-BG = (10, 14, 26)
-BG_2 = (15, 21, 36)
-TEXT = (230, 237, 247)
-TEXT_MUTED = (136, 146, 168)
-PINK = (255, 59, 107)
-PINK_DEEP = (176, 21, 74)
+BG = (10, 12, 11)            # terminal near-black
+BG_2 = (17, 20, 15)          # elevated surface
+TEXT = (232, 236, 228)       # ink
+TEXT_MUTED = (168, 176, 164) # ink-2
+PINK = (126, 243, 160)    # radar-green accent
+PINK_DEEP = (62, 195, 110)    # deeper green
 AMBER = (255, 176, 32)
-BORDER = (31, 42, 68)
+BORDER = (31, 38, 32)        # line
 
 TARGET_W, TARGET_H = 1200, 630
 SS = 2
