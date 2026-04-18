@@ -22,8 +22,119 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://hip3radar.xyz/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff3b6b'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%230a0e1a'/%3E%3C/svg%3E">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
+
+<!-- JSON-LD structured data for SEO + LLM parsing -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://hip3radar.xyz/#org",
+      "name": "HIP3Radar",
+      "url": "https://hip3radar.xyz",
+      "logo": "https://hip3radar.xyz/og-image.png",
+      "description": "Independent real-time risk surveillance for every Hyperliquid perp market across native HL and all HIP-3 deployers.",
+      "sameAs": [
+        "https://x.com/hip3radar",
+        "https://github.com/edgardextra-lang/hip3radar-site",
+        "https://t.me/hip3radar_alerts_bot"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://hip3radar.xyz/#app",
+      "name": "HIP3Radar",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web, Telegram",
+      "url": "https://hip3radar.xyz/hip3radar/",
+      "offers": [
+        {"@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD", "description": "Public radar dashboard, JSON API, Telegram alerts"},
+        {"@type": "Offer", "name": "Pro", "price": "29", "priceCurrency": "USD", "description": "Unlimited webhook alerts, Telegram/Discord/Slack delivery, per-market thresholds, priority latency"},
+        {"@type": "Offer", "name": "Team", "price": "199", "priceCurrency": "USD", "description": "Multi-user, SLA, custom signals, private markets"},
+        {"@type": "Offer", "name": "Enterprise", "price": "2000-10000", "priceCurrency": "USD", "description": "Dedicated infra, custom oracle sources, custom dashboards, on-prem"}
+      ],
+      "featureList": [
+        "Real-time risk scoring for 325+ Hyperliquid perp markets across 9 dexes",
+        "Oracle drift detection vs Binance/OKX/Bybit consensus",
+        "Mark-oracle spread monitoring",
+        "Open interest velocity tracking (1h and 24h)",
+        "Funding extremity alerts",
+        "JELLY-style manipulation detection",
+        "Free CORS-enabled JSON API",
+        "Telegram alert bot with custom thresholds",
+        "Public incident archive with Chart.js replays",
+        "Verified Deployer badge for HIP-3 deployers"
+      ],
+      "creator": {"@id": "https://hip3radar.xyz/#org"}
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://hip3radar.xyz/#website",
+      "url": "https://hip3radar.xyz",
+      "name": "HIP3Radar",
+      "description": "The independent safety score for every Hyperliquid perp",
+      "publisher": {"@id": "https://hip3radar.xyz/#org"}
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is HIP3Radar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "HIP3Radar is a free, public risk dashboard that monitors every Hyperliquid native and HIP-3 perpetual market for JELLY-style manipulation patterns. It polls 325+ markets across 9 perp dexes every 60 seconds and scores each one 0–100 on five signals: oracle drift, mark-oracle spread, OI velocity, OI/volume ratio, and funding extremity."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What was the JELLY incident on Hyperliquid?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On March 26, 2025, a single attacker pushed approximately $12 million in unrealized losses onto Hyperliquid's HLP vault by opening a $4.1M short on roughly 40% of JELLY's token supply, then pumping the spot price 400% on centralized exchanges. The Hyperliquid oracle followed the manipulated CEX price, the short was force-liquidated, and HLP inherited the underwater position. Validators voted to emergency-delist the market at the original entry price."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does HIP3Radar's risk score work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each market gets a 0–100 composite score from five signals: oracle drift (HL oracle vs CEX median, up to 25 points), mark-oracle spread (up to 20 points), OI velocity 1h and 24h combined (up to 35 points), OI/volume ratio (up to 10 points), and funding extremity (up to 10 points). Scores 40–59 are warning level, 60+ are critical."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the HIP3Radar API free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The JSON API is free, public, CORS-enabled, requires no signup or API key, and is documented at https://hip3radar.xyz/#api. Endpoints include /api/state, /api/all, /api/dex/{dex}, /api/history/{dex}/{coin}, /api/incidents, and /api/alerts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I get Telegram alerts from HIP3Radar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open https://t.me/hip3radar_alerts_bot in Telegram, click Start, and choose a risk threshold (40 for warning, 60 for critical). The bot DMs you whenever a Hyperliquid or HIP-3 market crosses your threshold. Free during public beta. Multi-user, with optional dex filtering and a 6-hour cooldown per market to prevent spam."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which HIP-3 deployers does HIP3Radar cover?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All eight current HIP-3 deployers are monitored: xyz (trade.xyz, US equities), vntl (Ventuals, pre-IPO perps), flx (Felix Exchange), hyna (HyENA), km (Markets by Kinetiq, international stocks), cash (dreamcash), para (Paragon), and abcd (ABCDEx). Plus all native Hyperliquid markets."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <style>
   :root {
     --bg: #0a0e1a;

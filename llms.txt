@@ -1,0 +1,58 @@
+# HIP3Radar
+
+> The independent safety score for every Hyperliquid perp market. Polls 325+ markets across 9 perp dexes (native HL + 8 HIP-3 deployers) every 60 seconds and grades each one 0–100 on oracle integrity, manipulation exposure, OI velocity, OI/volume thinness, and funding extremity. Free public API. Trust-Pilot-style verification badge for HIP-3 deployers.
+
+HIP3Radar is independent infrastructure for the Hyperliquid ecosystem, built after the March 2025 JELLY incident where a single trader pushed ~$12M in losses onto Hyperliquid's HLP vault via coordinated oracle manipulation on a thin-float meme perp. The same attack surface is now multiplied 4x by HIP-3 (permissionless perp deployment).
+
+Solo-built, MIT open source coming, applied for Hyperliquid Foundation grant. Live since April 15, 2026.
+
+## Core pages
+
+- [Landing page](https://hip3radar.xyz): product overview, live market stats, pricing, Telegram alerts CTA
+- [Live radar dashboard](https://hip3radar.xyz/hip3radar/): real-time table of every HL + HIP-3 perp market sorted by risk score, auto-refreshed every 30 seconds
+- [Incident archive](https://hip3radar.xyz/incidents): historical replays of HL manipulation events with minute-by-minute Chart.js visualization, starting with JELLY (March 2025)
+- [Telegram alert bot](https://t.me/hip3radar_alerts_bot): subscribe to risk threshold alerts, free during public beta, multi-user, dex filter, 6h dedup
+
+## Free public JSON API (CORS-enabled, no signup, no key)
+
+- [Top 25 risk](https://hip3radar.xyz/hip3radar/api/state): the 25 highest-risk markets right now
+- [All markets](https://hip3radar.xyz/hip3radar/api/all): every market with every signal
+- [Per-dex slice](https://hip3radar.xyz/hip3radar/api/dex/xyz): filter by deployer (xyz, vntl, flx, hyna, km, cash, para, abcd, hl)
+- [Per-market history](https://hip3radar.xyz/hip3radar/api/history/hl/BTC?hours=24): time series for any market, up to 168 hours
+- [Alert feed](https://hip3radar.xyz/hip3radar/api/alerts): recent threshold-crossing alerts
+- [Incident archive](https://hip3radar.xyz/hip3radar/api/incidents): list all documented HL manipulation events
+- [JELLY incident detail](https://hip3radar.xyz/hip3radar/api/incidents/jelly-2025): minute-by-minute replay data
+
+## Risk scoring methodology
+
+Each market gets a 0–100 composite score from five signals:
+
+1. **Oracle drift** — HL oracle price vs Binance/OKX/Bybit median (manipulation tell)
+2. **Mark-oracle spread** — HL internal mark price vs HL oracle price (divergence indicates pressure)
+3. **OI velocity** — open interest growth over 1h and 24h windows (accumulation signal)
+4. **OI / 24h volume ratio** — flags thin-float markets (the JELLY shape)
+5. **Funding extremity** — extreme positive or negative funding (overcrowded positioning)
+
+Score levels:
+- 0–19 (green): normal market conditions
+- 20–39 (yellow): elevated, one or more signals showing unusual activity
+- 40–59 (amber): warning, multiple manipulation signals converging
+- 60–100 (red): critical, JELLY-level pattern detected
+
+## What HIP3Radar is for
+
+- Hyperliquid traders who want early warning before the next JELLY-style attack
+- HL bot operators who want a risk feed wired into their execution layer (free CORS API)
+- HIP-3 deployers who want public verification of their markets' safety (Verified Deployer program)
+- HLP vault depositors monitoring systemic risk across the protocol
+- DeFi researchers and crypto journalists covering Hyperliquid incidents
+
+## Not affiliated
+
+HIP3Radar is independent infrastructure. Not affiliated with Hyperliquid Labs, Hyperliquid Foundation, or any HIP-3 deployer. Data comes from public Hyperliquid API endpoints + public CEX APIs (Binance, OKX, Bybit).
+
+## Contact
+
+- Twitter / X: https://x.com/hip3radar
+- Email: hello@hip3radar.xyz
+- GitHub: https://github.com/edgardextra-lang/hip3radar-site
