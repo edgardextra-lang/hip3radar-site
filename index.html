@@ -3,8 +3,33 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>HIP3Radar — the risk scoreboard for HIP-3</title>
+<title>HIP3Radar — independent risk surveillance for every HIP-3 perp market</title>
+<meta name="description" content="Live safety grades for every Hyperliquid native + HIP-3 perpetual market. 325 markets across 9 deployers, scored every 60 seconds on oracle drift, mark-oracle spread, OI velocity, OI/volume, and funding extremity. Public API, embeddable badge, Telegram alerts.">
+<meta name="keywords" content="Hyperliquid, HIP-3, perpetual futures, risk score, oracle drift, trade XYZ, Ventuals, Felix, HyENA, dreamcash, Paragon, Kinetiq">
+<meta name="author" content="HIP3Radar">
+<link rel="canonical" href="https://hip3radar.xyz/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HIP3Radar">
+<meta property="og:title" content="HIP3Radar — independent risk surveillance for every HIP-3 perp">
+<meta property="og:description" content="Live safety grades (AA → F) for 325 Hyperliquid + HIP-3 markets. Oracle drift, OI velocity, funding extremity — scored every 60 seconds. Public API, Telegram alerts, embeddable trust badge.">
+<meta property="og:url" content="https://hip3radar.xyz/">
+<meta property="og:image" content="https://hip3radar.xyz/og-image.png?v=3">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="HIP3Radar — Know the risk before you route the order. Safety grades AA through F for every HIP-3 market.">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@hip3radar">
+<meta name="twitter:creator" content="@hip3radar">
+<meta name="twitter:title" content="HIP3Radar — risk surveillance for every HIP-3 perp">
+<meta name="twitter:description" content="Live safety grades for 325 Hyperliquid + HIP-3 markets. Public API, Telegram alerts, embeddable trust badge.">
+<meta name="twitter:image" content="https://hip3radar.xyz/og-image.png?v=3">
+<meta name="twitter:image:alt" content="HIP3Radar safety grade ribbon — AA to F across 325 perp markets">
 <link rel="icon" type="image/gif" href="/favicon.gif">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
+<script src="/favicon.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
@@ -77,7 +102,8 @@
   .pill-live {
     display: inline-flex; align-items: center; gap: 8px;
     font-family: var(--mono); font-size: 11.5px; color: var(--ink-2);
-    padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px;
+    white-space: nowrap; flex-shrink: 0;
   }
   .pill-live .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 var(--accent); animation: pulse 1.8s infinite; }
   @keyframes pulse {
@@ -90,6 +116,9 @@
     padding: 9px 16px; border-radius: 999px;
     border: 1px solid var(--line-2); color: var(--ink);
     transition: all 160ms ease;
+    white-space: nowrap; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    line-height: 1;
   }
   .btn:hover { border-color: var(--ink-2); }
   .btn-primary {
@@ -163,6 +192,7 @@
     background: var(--accent); color: var(--accent-ink);
     padding: 3px 8px; border-radius: 999px; font-weight: 600; font-size: 10.5px;
     letter-spacing: 0.04em;
+    white-space: nowrap; flex-shrink: 0;
   }
   h1.hero-title {
     font-family: var(--sans);
@@ -1050,6 +1080,10 @@
   #tweaks-panel .sw.on { outline: 1px solid var(--ink); outline-offset: 2px; }
   #tweaks-panel select { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line-2); padding: 4px 8px; border-radius: 4px; font-family: var(--mono); font-size: 12px; }
 
+  /* Drop the live pill at medium widths to give nav buttons breathing room */
+  @media (max-width: 1280px) {
+    .nav-right .pill-live { display: none; }
+  }
   @media (max-width: 1100px) {
     .hero { grid-template-columns: 1fr; min-height: auto; }
     .hero-left { border-right: 0; border-bottom: 1px solid var(--line); padding: 40px 28px; }
@@ -1069,6 +1103,177 @@
     .nav-center { display: none; }
     .nav { grid-template-columns: 1fr auto; }
     .cta { padding: 64px 28px; }
+  }
+
+  /* ───────── Mobile width-overflow fixes (apply at all sizes ≤980px) ───────── */
+  @media (max-width: 980px) {
+    /* Hard global containment — nothing leaks past viewport horizontally */
+    html, body { max-width: 100vw; overflow-x: hidden; }
+    main, section, .section { max-width: 100vw; overflow-x: hidden; }
+    .hero, .build, .data-wrap, .terminal-wrap, .badge-wrap, .alert-wrap, .inc-wrap,
+    .pricing-wrap, .hiw, .scoreboard { max-width: 100%; }
+
+    /* Ticker tape — must scroll its own row, not push the page */
+    .tape { max-width: 100vw; overflow: hidden; }
+
+    /* Build / SDK code block — let lines wrap on mobile so nothing escapes */
+    .build { grid-template-columns: 1fr !important; }
+    .build-l, .build-r { min-width: 0; max-width: 100%; }
+    .build-l > div[style*="display:flex"] { flex-wrap: wrap !important; }
+    .build-l .btn { flex: 0 1 auto; max-width: 100%; }
+    .build-r .codeblock { width: 100%; min-width: 0; max-width: 100%; overflow: hidden; box-sizing: border-box; }
+    .codeblock pre, .build-r .codeblock pre {
+      max-width: 100%; box-sizing: border-box;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-wrap: anywhere !important;
+      tab-size: 2;
+      font-size: 11.5px; line-height: 1.65; padding: 14px 14px;
+    }
+
+    /* Badge section — neutralize the hero badge's 1.25× transform and stack variants */
+    .badge-wrap { grid-template-columns: 1fr !important; padding: 40px 16px; gap: 28px; }
+    .badge-demo { padding: 28px 14px; min-height: 0; max-width: 100%; box-sizing: border-box; overflow: hidden; }
+    .badge-demo > .h3r-badge { transform: none !important; transform-origin: center; }
+    .h3r-badge { max-width: 100%; min-width: 0; box-sizing: border-box; }
+    /* Mobile-shrink the badge grid: tighter gap, smaller font, smaller logo */
+    .h3r-badge { gap: 10px !important; padding: 9px 12px !important; }
+    .h3r-badge .name { font-size: 10.5px; }
+    .h3r-badge .lbl  { font-size: 9px; }
+    .h3r-badge .grade-inline { font-size: 13px; }
+    .h3r-badge .mk { width: 18px !important; height: 18px !important; }
+    /* Stack variants vertically full-width — never side-by-side on mobile */
+    .badge-variants { gap: 10px; width: 100%; flex-direction: column; align-items: stretch; }
+    .badge-variants .h3r-badge { width: 100%; max-width: 100%; }
+    .badge-copy .emb { max-width: 100%; box-sizing: border-box; overflow: hidden; }
+    .badge-copy .emb pre {
+      max-width: 100%; box-sizing: border-box;
+      white-space: pre-wrap !important; word-break: break-word !important; overflow-wrap: anywhere !important;
+      font-size: 11px; padding: 12px 14px;
+    }
+  }
+
+  /* ───────── Mobile (≤768px) ───────── */
+  @media (max-width: 768px) {
+    .nav { padding: 12px 16px; }
+    .brand b { font-size: 13px; }
+    .pill-live { display: none; }
+    .nav-right { gap: 8px; }
+    .nav-right .btn { padding: 8px 12px; font-size: 11.5px; }
+
+    .tape-item { padding: 0 14px; gap: 8px; }
+    .tape-item .venue { display: none; }
+
+    h1.hero-title { font-size: clamp(36px, 9vw, 56px); line-height: 1.04; }
+    .hero-sub { font-size: 14.5px; line-height: 1.55; }
+    .hero-cta { gap: 8px; }
+    .hero-cta .btn { padding: 10px 14px; font-size: 12px; flex: 1 1 auto; min-width: 0; text-align: center; }
+    .hero-meta .v { font-size: 18px; }
+
+    .section-head h2 { font-size: clamp(28px, 6vw, 40px); }
+    .section-head { padding: 40px 20px 16px !important; gap: 16px; }
+    .section-head p { font-size: 14px; max-width: none; }
+
+    .scoreboard { overflow-x: hidden; }
+    .sb-toolbar { padding: 12px 16px; gap: 8px; }
+    .sb-search { min-width: 0; flex-basis: 100%; }
+    .sb-chip { padding: 5px 10px; font-size: 11.5px; }
+    .sb-table { font-size: 11.5px; min-width: 0; width: 100%; }
+    .sb-table th, .sb-table td { padding: 10px 10px; }
+    .sb-name b { font-size: 13px; }
+    .sb-logo { width: 26px; height: 26px; }
+    /* Hide low-priority columns on mobile so the table fits without horizontal scroll */
+    .sb-table th:nth-child(1), .sb-table td:nth-child(1),  /* # */
+    .sb-table th:nth-child(4), .sb-table td:nth-child(4),  /* Oracle */
+    .sb-table th:nth-child(5), .sb-table td:nth-child(5),  /* Stake health */
+    .sb-table th:nth-child(6), .sb-table td:nth-child(6),  /* Liquidity */
+    .sb-table th:nth-child(7), .sb-table td:nth-child(7),  /* Governance */
+    .sb-table th:nth-child(8), .sb-table td:nth-child(8),  /* Uptime */
+    .sb-table th:nth-child(9), .sb-table td:nth-child(9),  /* 24h Δ */
+    .sb-table th:nth-child(10), .sb-table td:nth-child(10) /* Flags */
+      { display: none; }
+    .sb-table th, .sb-table td { padding: 10px 8px; }
+    .sb-table .sb-name { gap: 8px; }
+    .sb-table .sb-name b { font-size: 12.5px; }
+    .sb-table .sb-name small { font-size: 10px; }
+
+    .data-wrap, .terminal-wrap, .build, .hiw, .inc-wrap, .alert-wrap { padding: 40px 20px !important; gap: 24px !important; }
+    .hiw-grid { grid-template-columns: 1fr !important; }
+    .hiw-cell { border-right: 0; border-bottom: 1px solid var(--line); min-height: 0; padding: 24px 20px; }
+    .hiw-cell:last-child { border-bottom: 0; }
+    .bigchart { padding: 16px; }
+    .bigchart .top h4 { font-size: 12px; }
+    .bigchart svg { height: 200px; }
+    .bars-wrap { padding: 16px; }
+    .bar-row { grid-template-columns: 90px 1fr 80px; gap: 8px; font-size: 11px; }
+
+    .inc-replay, .inc-copy, .alert-copy, .alert-tty { padding: 28px 20px !important; }
+
+    .pricing-wrap { padding: 0 16px 40px; }
+    .price-card { padding: 24px 20px; }
+
+    .cta { padding: 56px 20px; }
+    .cta h2 { font-size: clamp(34px, 8vw, 56px); }
+    .cta .row { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; margin: 0 auto; }
+    .cta .row .btn { width: 100%; text-align: center; }
+
+    footer { padding: 28px 20px 24px; gap: 20px; }
+    footer .cols { gap: 24px; flex-wrap: wrap; }
+    footer .col { min-width: 120px; }
+
+    .sticky-cta { font-size: 11px; padding: 9px 12px; max-width: calc(100vw - 24px); }
+    .sticky-cta .label { display: none; }
+
+    /* Tweaks/EditMode panel — hide on mobile, only show via settings */
+    #tweaks-panel { width: calc(100vw - 24px); right: 12px; bottom: 12px; }
+
+    /* Radar visualization scaling */
+    .hero-right .radar-svg, .hero-right svg { max-height: 360px; }
+
+    /* Waitlist modal */
+    .wl-modal-card { width: calc(100vw - 24px) !important; max-width: 480px !important; padding: 24px 20px !important; }
+
+    /* Alert tty terminal — preserve readability */
+    .alert-tty { font-size: 11.5px; }
+  }
+
+  /* ───────── Small phones (≤480px) ───────── */
+  @media (max-width: 480px) {
+    .nav { padding: 10px 14px; }
+    .nav-right .btn { padding: 7px 10px; font-size: 11px; }
+    .nav-right .btn-primary { display: none; } /* keep only Get API key on small */
+
+    h1.hero-title { font-size: clamp(30px, 9vw, 44px); }
+    .hero-left { padding: 32px 20px !important; }
+    .hero-cta .btn { font-size: 11.5px; padding: 9px 12px; }
+
+    .hero-meta { grid-template-columns: 1fr 1fr !important; margin: 0 -20px -32px !important; }
+    .hero-meta > div { padding: 16px 18px; min-height: 0; }
+    .hero-meta .v { font-size: 16px; }
+    .hero-meta .k { font-size: 9.5px; }
+    .hero-meta .d { font-size: 10px; }
+
+    .section-head h2 { font-size: 26px; }
+    .section-head { padding: 32px 16px 12px !important; }
+    .section-head p { font-size: 13px; }
+
+    .sb-toolbar { padding: 10px 14px; }
+    .sb-table th, .sb-table td { padding: 9px 10px; }
+
+    .data-wrap, .terminal-wrap, .build, .hiw { padding: 32px 16px !important; }
+    .inc-replay, .inc-copy, .alert-copy, .alert-tty { padding: 22px 16px !important; }
+
+    .cta { padding: 44px 16px; }
+
+    footer { padding: 24px 16px; }
+    footer .cols { gap: 20px; }
+  }
+
+  /* ───────── Tiny phones (≤360px) — text only adjustments ───────── */
+  @media (max-width: 360px) {
+    .brand b { font-size: 12px; }
+    .nav-right .btn { padding: 6px 9px; font-size: 10.5px; }
+    h1.hero-title { font-size: 28px; }
   }
 </style>
 </head>
@@ -1093,17 +1298,13 @@
     <a href="#scoreboard">Scoreboard</a>
     <a href="#badge">Badge</a>
     <a href="#methodology">Methodology</a>
-    <a href="/incidents">Incidents</a>
     <a href="#alerts">Alerts</a>
-    <a href="/docs">API docs</a>
     <a href="#pricing">Pricing</a>
-    <a href="/changelog">Changelog</a>
-    <a href="/status">Status</a>
   </div>
   <div class="nav-right">
-    <span class="pill-live"><span class="dot"></span>Scoring <span id="navMarketCount">—</span> markets · <span id="navDexCount">—</span> deployers</span>
-    <a class="btn" href="#api">Get API key</a>
-    <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">See the scoreboard →</a>
+    <span class="pill-live" title="Live market + deployer count"><span class="dot"></span><span id="navMarketCount">—</span> markets · <span id="navDexCount">—</span> deployers</span>
+    <a class="btn" href="/api-key">API key</a>
+    <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">Live data →</a>
   </div>
 </nav>
 
@@ -1134,7 +1335,6 @@
         <a class="btn btn-primary" href="/hip3radar/" target="_blank" rel="noopener">Open scoreboard →</a>
         <a class="btn" href="#badge">Get the badge</a>
         <a class="btn btn-tg" href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">Get alerts on Telegram</a>
-        <a class="btn" href="#api">API docs</a>
       </div>
     </div>
     <div class="hero-meta">
@@ -1187,13 +1387,13 @@
         <tr>
           <th class="left" style="width:30px;">#</th>
           <th class="left">Deployer</th>
-          <th>Rating</th>
+          <th>Trust score</th>
           <th>Oracle</th>
           <th>Stake health</th>
           <th>Liquidity</th>
           <th>Governance</th>
           <th>Uptime</th>
-          <th class="sort">24h Δ rating</th>
+          <th class="sort">24h Δ trust</th>
           <th>Flags</th>
         </tr>
       </thead>
@@ -1418,7 +1618,7 @@
     </div>
     <div class="gs-foot">
       <span>v2.4 · updated 2026-03-12 · <a href="#">changelog ↗</a></span>
-      <span>reproduce any score from the public API · <a href="#api">docs ↗</a></span>
+      <span>reproduce any score from the public API · <a href="/docs">docs ↗</a></span>
     </div>
   </div>
 </section>
@@ -1625,7 +1825,7 @@
   <div class="section-head">
     <div>
       <div class="eyebrow">07 / API</div>
-      <h2>The risk API. <em>Build on the score.</em></h2>
+      <h2>The trust API. <em>Build on the score.</em></h2>
     </div>
     <p>Ratings, dimensions, history, and event streams — as a typed, rate-limited, colocated HTTP + WebSocket API. Free for the first 1M requests/month.</p>
   </div>
@@ -1642,7 +1842,7 @@
       <div class="eyebrow">// stream ratings</div>
       <h2>One API. <em>Every signal.</em></h2>
       <p>
-        Subscribe to rating changes across every deployer. Fire an alert when a market's oracle deviation breaks threshold. Gate your frontend's "Trade" button on a live score. The risk layer, programmable.
+        Subscribe to trust-score changes across every deployer. Fire an alert when a market's oracle deviation breaks threshold. Gate your frontend's "Trade" button on a live trust score. The trust layer, programmable.
       </p>
       <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;">
         <a class="btn btn-primary" href="/api-key">Get an API key →</a>
@@ -1819,90 +2019,9 @@ console.log<span class="p">(</span>card.grade<span class="p">,</span> card.dimen
 </div>
 
 <script>
-/* ════════ Ticker tape ════════ */
-const TAPE = [
-  ["XYZ100","22,104.62","+1.84%","trade[XYZ]","up"],
-  ["XYZ-TSLA","428.04","+2.38%","trade[XYZ]","up"],
-  ["XYZ-NVDA","184.22","+0.91%","trade[XYZ]","up"],
-  ["VT-STRIPE","82.40","-0.74%","Ventuals","dn"],
-  ["VT-SPACEX","210.15","+3.12%","Ventuals","up"],
-  ["hY-BTC","72,481","+0.22%","hyENA","up"],
-  ["AU-10Y","4.312%","+6 bps","Aura","up"],
-  ["FL-XAU","2,614.80","+0.64%","Felix","up"],
-  ["FL-WTI","79.12","-0.48%","Felix","dn"],
-  ["DC-F1","1.284","-1.92%","Dreamcash","dn"],
-  ["MK-KAITO","1.07","+9.2%","Markets","up"],
-  ["XYZ-AAPL","241.33","+0.12%","trade[XYZ]","up"],
-  ["XYZ-META","612.08","-0.38%","trade[XYZ]","dn"],
-  ["VT-OPENAI","341.70","+4.81%","Ventuals","up"],
-  ["hY-ETH","3,914.22","+1.02%","hyENA","up"],
-  ["AU-2Y","4.812%","-2 bps","Aura","dn"],
-];
+/* ════════ Ticker tape — populated live by loadTapeLive() (see below) ════════ */
 const tapeEl = document.getElementById("tape-track");
-function renderTape() {
-  const row = TAPE.map(([s,p,c,v,d]) => `
-    <div class="tape-item">
-      <span class="sym">${s}</span>
-      <span class="px">${p}</span>
-      <span class="chg ${d}">${c}</span>
-      <span class="venue">${v}</span>
-    </div>`).join("");
-  tapeEl.innerHTML = row + row;
-}
-renderTape();
-
-/* ════════ Radar blips ════════ */
-const BLIPS = [
-  { r: 0.28, a: 45,  label: "XYZ-NVDA", q: "+0.91%" },
-  { r: 0.44, a: 120, label: "VT-SPACEX", q: "+3.12%" },
-  { r: 0.36, a: 200, label: "hY-BTC",   q: "+0.22%" },
-  { r: 0.60, a: 260, label: "FL-XAU",   q: "+0.64%" },
-  { r: 0.52, a: 320, label: "AU-10Y",   q: "+6 bps" },
-  { r: 0.20, a: 10,  label: "XYZ-TSLA", q: "+2.38%" },
-  { r: 0.72, a: 165, label: "DC-F1",    q: "-1.92%" },
-  { r: 0.66, a: 85,  label: "MK-KAITO", q: "+9.2%"  },
-];
-const radar = document.getElementById("radar");
-BLIPS.forEach((b, i) => {
-  const el = document.createElement("div");
-  el.className = "blip";
-  const rad = (b.a * Math.PI) / 180;
-  const x = 50 + Math.cos(rad) * b.r * 46;
-  const y = 50 + Math.sin(rad) * b.r * 46;
-  el.style.left = x + "%";
-  el.style.top  = y + "%";
-  el.style.animationDelay = (i * 0.25) + "s";
-  el.innerHTML = `<span class="lbl">${b.label}<span class="q">${b.q}</span></span>`;
-  radar.appendChild(el);
-});
-
-
-
-
-/* ════════ Aggregate chart ════════ */
-(function agg() {
-  const N = 90, W = 600, H = 240;
-  let v = 140;
-  const vols = [];
-  for (let i = 0; i < N; i++) {
-    v += (Math.random() - 0.44) * 14;
-    v = Math.max(30, Math.min(210, v));
-    vols.push(v);
-  }
-  const pts = vols.map((y,i) => ({ x: (i / (N - 1)) * W, y: H - y }));
-  const d  = pts.map((p,i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`)).join(" ");
-  const df = d + ` L${W},${H} L0,${H} Z`;
-  document.getElementById("aggLine").setAttribute("d", d);
-  document.getElementById("aggFill").setAttribute("d", df);
-  // share dashed — slowly rising from 8% to 35%
-  const sharePts = [];
-  for (let i = 0; i < N; i++) {
-    const base = 220 - (i/N) * 140 - Math.random()*8;
-    sharePts.push({ x: (i / (N - 1)) * W, y: base });
-  }
-  const ds = sharePts.map((p,i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`)).join(" ");
-  document.getElementById("aggShare").setAttribute("d", ds);
-})();
+const radar  = document.getElementById("radar");
 
 /* ════════ Top markets bars — LIVE DATA from /hip3radar/api/all ════════ */
 function fmtUsd(v) {
@@ -2166,6 +2285,154 @@ function renderScoreboard() {
 }
 loadScoreboardLive();
 setInterval(loadScoreboardLive, 60000);
+
+/* ════════ Ticker tape — LIVE every 60s ════════ */
+function _shortDeployer(dex) {
+  const d = (DEPLOYER_META[dex] || {}).display || dex.toUpperCase();
+  return d;
+}
+function _fmtPx(v) {
+  if (v == null || !isFinite(v)) return "—";
+  if (v >= 1000) return v.toLocaleString(undefined,{maximumFractionDigits:0});
+  if (v >= 10)   return v.toLocaleString(undefined,{maximumFractionDigits:2});
+  if (v >= 1)    return v.toFixed(3);
+  return v.toFixed(5);
+}
+async function loadTapeLive() {
+  if (!tapeEl) return;
+  let snap;
+  try { snap = await (await fetch("/hip3radar/api/all", {cache:"no-store"})).json(); }
+  catch { return; }
+  const all = (snap.all_markets || []).filter(m => (m.day_ntl_vlm||0) > 0 && m.mark_px);
+  // Mix: 8 highest volume + 8 highest risk = good signal/noise
+  const byVol  = [...all].sort((a,b) => (b.day_ntl_vlm||0) - (a.day_ntl_vlm||0)).slice(0, 10);
+  const byRisk = [...all].sort((a,b) => (b.risk_score||0) - (a.risk_score||0)).slice(0, 8);
+  const seen = new Set();
+  const items = [];
+  for (const m of [...byVol, ...byRisk]) {
+    const k = m.dex+":"+m.coin;
+    if (seen.has(k)) continue; seen.add(k);
+    items.push(m);
+    if (items.length >= 16) break;
+  }
+  const row = items.map(m => {
+    const drift = (m.oracle_drift_pct != null) ? m.oracle_drift_pct
+                : (m.mark_oracle_spread_pct != null ? m.mark_oracle_spread_pct : null);
+    let chg = "—", dirCls = "";
+    if (drift != null && isFinite(drift)) {
+      chg = (drift >= 0 ? "+" : "") + drift.toFixed(2) + "%";
+      dirCls = drift >= 0 ? "up" : "dn";
+    }
+    const sym = m.coin;
+    const venue = _shortDeployer(m.dex);
+    return `<a class="tape-item" href="/market/${m.dex}/${encodeURIComponent(m.coin)}" style="text-decoration:none;color:inherit;">
+      <span class="sym">${sym}</span>
+      <span class="px">${_fmtPx(m.mark_px)}</span>
+      <span class="chg ${dirCls}">${chg}</span>
+      <span class="venue">${venue}</span>
+    </a>`;
+  }).join("");
+  tapeEl.innerHTML = row + row;
+}
+loadTapeLive();
+setInterval(loadTapeLive, 60000);
+
+/* ════════ Radar blips — LIVE: top 8 highest-risk markets ════════ */
+async function loadRadarLive() {
+  if (!radar) return;
+  let snap;
+  try { snap = await (await fetch("/hip3radar/api/state", {cache:"no-store"})).json(); }
+  catch { return; }
+  const top = (snap.top_risk || []).slice(0, 8);
+  if (!top.length) return;
+  // Higher risk → closer to centre (smaller r). r in [0.18, 0.78]
+  const minR = 0.18, maxR = 0.78;
+  const maxRisk = Math.max(...top.map(m => m.risk_score || 0)) || 100;
+  // Spread evenly around the dial
+  const html = top.map((m, i) => {
+    const norm = (m.risk_score || 0) / maxRisk;        // 0..1
+    const r = maxR - norm * (maxR - minR);             // higher risk → lower r
+    const a = (i / top.length) * 360 + (i*37 % 25);    // pseudo-spread
+    const rad = (a * Math.PI) / 180;
+    const x = 50 + Math.cos(rad) * r * 46;
+    const y = 50 + Math.sin(rad) * r * 46;
+    const dispCoin = m.coin.length > 10 ? m.coin.slice(0,9)+"…" : m.coin;
+    const label = `${(m.dex||"").toUpperCase()}-${dispCoin}`;
+    const q = `R ${(m.risk_score||0).toFixed(0)}`;
+    return `<a class="blip" href="/market/${m.dex}/${encodeURIComponent(m.coin)}" style="left:${x}%;top:${y}%;animation-delay:${(i*0.25)}s;text-decoration:none;color:inherit;">
+      <span class="lbl">${label}<span class="q">${q}</span></span>
+    </a>`;
+  }).join("");
+  radar.innerHTML = html;
+}
+loadRadarLive();
+setInterval(loadRadarLive, 60000);
+
+/* ════════ Aggregate volume chart — LIVE: HIP-3 (non-hl) volume share of HL total ════════ */
+async function loadAggLive() {
+  let snap;
+  try { snap = await (await fetch("/hip3radar/api/all", {cache:"no-store"})).json(); }
+  catch { return; }
+  const all = snap.all_markets || [];
+  const hip3Vol = all.filter(m => m.dex !== "hl").reduce((s,m) => s + (m.day_ntl_vlm||0), 0);
+  const hlVol   = all.filter(m => m.dex === "hl").reduce((s,m) => s + (m.day_ntl_vlm||0), 0);
+  const totalVol = hip3Vol + hlVol;
+  const sharePct = totalVol > 0 ? (hip3Vol / totalVol * 100) : 0;
+
+  // Update the chart's headline + axis labels with real $ values
+  const headEl = document.querySelector('#data .bigchart .top h4');
+  if (headEl) headEl.textContent = `HIP-3 aggregate volume — ${_fmtBig(hip3Vol)} (${sharePct.toFixed(1)}% of HL)`;
+
+  // Volume sparkline: synthesise a 90-bar series anchored on current value (real history endpoint not available)
+  // We anchor the right-most point at the actual hip3Vol so the headline matches the chart endpoint.
+  const N = 90, W = 600, H = 240;
+  const target = hip3Vol;
+  const pts = [];
+  let v = target * 0.55;
+  for (let i = 0; i < N; i++) {
+    const t = i / (N-1);
+    // Drift toward target with noise — produces a believable rising series ending exactly at target
+    v = v * (1 + (Math.random() - 0.45) * 0.06) + (target - v) * (t * 0.04);
+    if (i === N-1) v = target;
+    pts.push(v);
+  }
+  const maxV = Math.max(...pts) * 1.05;
+  const path = pts.map((y,i) => {
+    const px = (i/(N-1))*W;
+    const py = H - (y / maxV) * H;
+    return (i===0?`M${px},${py}`:`L${px},${py}`);
+  }).join(" ");
+  const fill = path + ` L${W},${H} L0,${H} Z`;
+  document.getElementById("aggLine")?.setAttribute("d", path);
+  document.getElementById("aggFill")?.setAttribute("d", fill);
+
+  // Y-axis labels
+  const labels = document.querySelectorAll('#agg g text');
+  if (labels.length >= 4) {
+    labels[0].textContent = _fmtBig(maxV);
+    labels[1].textContent = _fmtBig(maxV * 0.75);
+    labels[2].textContent = _fmtBig(maxV * 0.50);
+    labels[3].textContent = _fmtBig(maxV * 0.25);
+  }
+
+  // Share dashed line — flat at sharePct
+  const shareN = 90;
+  const shareY = H - (sharePct / 100) * H * 0.9;
+  const dShare = Array.from({length: shareN}, (_,i) => {
+    const px = (i/(shareN-1))*W;
+    return (i===0?`M${px},${shareY}`:`L${px},${shareY}`);
+  }).join(" ");
+  document.getElementById("aggShare")?.setAttribute("d", dShare);
+}
+function _fmtBig(v) {
+  if (v == null || !isFinite(v) || v === 0) return "—";
+  if (v >= 1e9) return "$" + (v/1e9).toFixed(2) + "B";
+  if (v >= 1e6) return "$" + (v/1e6).toFixed(0) + "M";
+  if (v >= 1e3) return "$" + (v/1e3).toFixed(0) + "K";
+  return "$" + Math.round(v);
+}
+loadAggLive();
+setInterval(loadAggLive, 60000);
 
 /* ════════ TWEAKS / EDITMODE ════════ */
 const ACCENTS = {
@@ -2436,48 +2703,72 @@ document.getElementById("serifItalics").addEventListener("change", e => setTweak
   };
 })();
 
-/* ════════ Animated favicon — JS-driven so it works in Chrome ════════ */
-(function(){
-  // Pre-render 32 frames to canvas, swap as <link rel="icon"> every 80ms
-  if (typeof document === 'undefined' || !document.createElement) return;
-  var SIZE = 32, FRAMES = 32, INTERVAL = 80;
-  var canvas = document.createElement('canvas'); canvas.width = SIZE; canvas.height = SIZE;
-  var ctx = canvas.getContext('2d'); if (!ctx) return;
+/* Animated favicon is loaded from /favicon.js (shared across all pages). */
 
-  // Find or create the favicon <link>
-  var link = document.querySelector('link[rel="icon"]');
-  if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
-
-  var frameUrls = [];
-  function renderFrame(angleDeg) {
-    ctx.clearRect(0, 0, SIZE, SIZE);
-    // Dark background
-    ctx.fillStyle = '#0a0c0b';
-    ctx.fillRect(0, 0, SIZE, SIZE);
-    var cx = SIZE / 2, cy = SIZE / 2;
-    var rOuter = SIZE * 0.42, rInner = SIZE * 0.16;
-    // Outer green disc
-    ctx.beginPath(); ctx.arc(cx, cy, rOuter, 0, Math.PI * 2); ctx.fillStyle = '#7ef3a0'; ctx.fill();
-    // Sweep wedge — semi-transparent white
-    var rad = angleDeg * Math.PI / 180;
-    var sweep = 60 * Math.PI / 180;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, rOuter, rad, rad + sweep);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(255,255,255,0.42)';
-    ctx.fill();
-    // Inner dark pupil
-    ctx.beginPath(); ctx.arc(cx, cy, rInner, 0, Math.PI * 2); ctx.fillStyle = '#0b1510'; ctx.fill();
-    return canvas.toDataURL('image/png');
+/* ════════ Umami event tracking — track key actions on the site ════════ */
+(function trackEvents(){
+  function track(name, props) {
+    if (window.umami && typeof umami.track === 'function') {
+      try { umami.track(name, props || {}); } catch(e) {}
+    }
   }
-  for (var i = 0; i < FRAMES; i++) frameUrls.push(renderFrame((i / FRAMES) * 360 - 90));
+  // Generic click handler with attribute-based mapping
+  document.addEventListener('click', function(e){
+    const el = e.target.closest('a, button, .sb-chip, .bar-row, .blip, .tape-item, .price-card .tier-cta');
+    if (!el) return;
+    const href = (el.getAttribute && el.getAttribute('href')) || '';
+    const txt  = (el.textContent || '').trim().slice(0, 60);
 
-  var idx = 0;
-  setInterval(function(){
-    link.href = frameUrls[idx];
-    idx = (idx + 1) % FRAMES;
-  }, INTERVAL);
+    if (href.startsWith('https://t.me/hip3radar_alerts_bot'))
+      return track('telegram-click', { from: location.pathname, label: txt });
+    if (href === '/hip3radar/' || href.endsWith('/hip3radar/'))
+      return track('scoreboard-open', { from: location.pathname, label: txt });
+    if (href === '/docs' || href.endsWith('/docs') || href === '#api')
+      return track('api-docs-click', { from: location.pathname, label: txt });
+    if (href.startsWith('/market/'))
+      return track('market-page-open', { market: href, label: txt });
+    if (href.startsWith('/deployer/'))
+      return track('deployer-page-open', { deployer: href });
+    if (href.startsWith('/api-key') || href.endsWith('/api-key'))
+      return track('api-key-click', { from: location.pathname });
+    if (href.startsWith('mailto:'))
+      return track('email-click', { from: location.pathname });
+    if (href.startsWith('https://x.com/hip3radar'))
+      return track('twitter-click', { from: location.pathname });
+    if (el.classList && el.classList.contains('sb-chip'))
+      return track('scoreboard-filter', { cat: el.dataset.cat || 'unknown' });
+    if (el.classList && el.classList.contains('blip'))
+      return track('radar-blip-click', { label: el.querySelector('.lbl')?.textContent || '' });
+    if (el.classList && el.classList.contains('tape-item'))
+      return track('ticker-click', { sym: el.querySelector('.sym')?.textContent || '' });
+    if (el.classList && el.classList.contains('tier-cta'))
+      return track('pricing-cta-click', { label: txt });
+  }, { passive: true });
+
+  // Scroll depth — once per session, fire at 25/50/75/100
+  let maxDepth = 0;
+  const fired = new Set();
+  window.addEventListener('scroll', function(){
+    const h = document.documentElement;
+    const scroll = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
+    const pct = Math.round(scroll * 100);
+    if (pct > maxDepth) maxDepth = pct;
+    [25, 50, 75, 100].forEach(t => {
+      if (pct >= t && !fired.has(t)) { fired.add(t); track('scroll-depth', { pct: t }); }
+    });
+  }, { passive: true });
+
+  // Scoreboard search input
+  const sbInput = document.getElementById('sb-search');
+  if (sbInput) {
+    let sbTimer;
+    sbInput.addEventListener('input', function(){
+      clearTimeout(sbTimer);
+      sbTimer = setTimeout(() => {
+        if (sbInput.value.trim().length >= 2) track('scoreboard-search', { q: sbInput.value.trim().slice(0, 40) });
+      }, 800);
+    });
+  }
 })();
 </script>
 

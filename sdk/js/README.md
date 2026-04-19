@@ -13,11 +13,13 @@ import { HIP3Radar, safetyGrade } from "hip3radar";
 
 const client = new HIP3Radar();  // free public tier — no key
 
-// Top 25 highest-risk markets right now
+// Top 25 markets by lowest trust score (riskiest first)
 const state = await client.state();
 for (const m of state.top_risk) {
-  const g = safetyGrade(m.risk_score);
-  console.log(`${m.name.padEnd(25)} ${g.grade.padStart(3)} (${g.rating}/100)`);
+  // Every market carries `trust_score` (canonical, higher = safer).
+  // `risk_score` is preserved for backwards compat (deprecated, will be removed in v1.0).
+  const g = safetyGrade(m.risk_score);  // safetyGrade still accepts the raw risk score
+  console.log(`${m.name.padEnd(25)} ${g.grade.padStart(3)} (trust ${m.trust_score}/100)`);
 }
 
 // Full snapshot

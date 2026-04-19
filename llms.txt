@@ -9,7 +9,7 @@ Solo-built, MIT open source coming, applied for Hyperliquid Foundation grant. Li
 ## Core pages
 
 - [Landing page](https://hip3radar.xyz): product overview, live market stats, pricing, Telegram alerts CTA
-- [Live radar dashboard](https://hip3radar.xyz/hip3radar/): real-time table of every HL + HIP-3 perp market sorted by risk score, auto-refreshed every 30 seconds
+- [Live radar dashboard](https://hip3radar.xyz/hip3radar/): real-time table of every HL + HIP-3 perp market sorted by trust score, auto-refreshed every 30 seconds
 - [Incident archive](https://hip3radar.xyz/incidents): historical replays of HL manipulation events with minute-by-minute Chart.js visualization, starting with JELLY (March 2025)
 - [Telegram alert bot](https://t.me/hip3radar_alerts_bot): subscribe to risk threshold alerts, free during public beta, multi-user, dex filter, 6h dedup
 

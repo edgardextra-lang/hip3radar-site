@@ -199,7 +199,8 @@
           "dex": { "type": "string", "example": "vntl" },
           "coin": { "type": "string", "example": "ANTHROPIC" },
           "name": { "type": "string", "example": "vntl:ANTHROPIC" },
-          "risk_score": { "type": "number", "minimum": 0, "maximum": 100, "description": "Composite risk 0-100. Higher = more dangerous." },
+          "trust_score": { "type": "number", "minimum": 0, "maximum": 100, "description": "Composite trust score 0-100. Higher = safer market. Canonical field going forward." },
+          "risk_score": { "type": "number", "minimum": 0, "maximum": 100, "deprecated": true, "description": "DEPRECATED — use trust_score instead. Composite risk 0-100 where higher = more dangerous. Will be removed in v1.0." },
           "oracle_px": { "type": "number" },
           "mark_px": { "type": "number" },
           "mid_px": { "type": "number" },
@@ -265,7 +266,8 @@
                 "funding": { "type": "number" },
                 "oracle_drift_pct": { "type": "number", "nullable": true },
                 "mark_oracle_spread_pct": { "type": "number" },
-                "risk_score": { "type": "number" }
+                "trust_score": { "type": "number", "minimum": 0, "maximum": 100 },
+                "risk_score": { "type": "number", "deprecated": true }
               }
             }
           }

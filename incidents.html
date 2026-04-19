@@ -23,6 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
 <link rel="icon" type="image/gif" href="/favicon.gif">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
+<script src="/favicon.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root {
@@ -78,6 +79,7 @@
   .btn {
     font-family: var(--mono); font-size: 12.5px; padding: 9px 16px;
     border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink); transition: all 160ms;
+    white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; line-height: 1;
   }
   .btn:hover { border-color: var(--ink-2); }
   .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 500; }
@@ -210,11 +212,25 @@
     footer { padding: 20px 24px; }
   }
 
+  @media (max-width: 680px) {
+    .nav { padding: 12px 16px; grid-template-columns: 1fr auto; }
+    .brand b { font-size: 13px; }
+    .nav-right { gap: 8px; }
+    .nav-right .btn { padding: 8px 12px; font-size: 11.5px; }
+    .hero-wrap, .body-wrap { padding: 32px 18px; }
+    .panel-head, .panel-body { padding: 18px 16px; }
+    .metrics { grid-template-columns: 1fr 1fr; margin: 0 -16px 20px; }
+    .metric { padding: 14px 16px; }
+  }
   @media (max-width: 480px) {
-    h1 { font-size: 32px; }
-    .panel-head h2 { font-size: 22px; }
-    .metric .val { font-size: 18px; }
-    .chart-container { height: 200px; }
+    .nav-right .btn-primary { display: none; }
+    h1 { font-size: 28px; line-height: 1.05; }
+    .lead, p.lead { font-size: 14.5px; }
+    .panel-head h2 { font-size: 19px; }
+    .metric .val { font-size: 17px; }
+    .metric .label { font-size: 10.5px; }
+    .chart-container { height: 200px; padding: 10px; }
+    footer { flex-direction: column; align-items: flex-start; gap: 8px; padding: 20px 18px; }
   }
 </style>
 </head>
@@ -229,9 +245,7 @@
     <a href="/#scoreboard">Scoreboard</a>
     <a href="/#badge">Badge</a>
     <a href="/#methodology">Methodology</a>
-    <a href="/incidents">Incidents</a>
     <a href="/#alerts">Alerts</a>
-    <a href="/#api">API</a>
     <a href="/#pricing">Pricing</a>
   </div>
   <div class="nav-right">
@@ -245,7 +259,7 @@
     <div class="eyebrow"><span class="dot"></span> Public archive</div>
     <h1>Every HL manipulation event, <em>replayed.</em></h1>
     <p class="lead">
-      The historical record of what happens when a Hyperliquid perp market goes wrong &mdash; replayed minute-by-minute with HIP3Radar's risk score overlaid. Starting with JELLY (March 2025). Future incidents are auto-captured from live HIP3Radar telemetry.
+      The historical record of what happens when a Hyperliquid perp market goes wrong &mdash; replayed minute-by-minute with HIP3Radar's trust score overlaid. Starting with JELLY (March 2025). Future incidents are auto-captured from live HIP3Radar telemetry.
     </p>
   </div>
 
@@ -299,8 +313,8 @@ async function loadList() {
           <div class="val">${fmt.usd(inc.estimated_hlp_loss_usd)}</div>
         </div>
         <div class="incident-grade">
-          <span class="lbl">Peak score</span>
-          ${fmt.score(inc.peak_risk_score)}
+          <span class="lbl">Trough trust</span>
+          ${inc.peak_risk_score != null ? fmt.score(100 - inc.peak_risk_score) : "—"}
         </div>
       </div>
     `).join("");
@@ -342,7 +356,7 @@ function renderIncident(inc) {
         <p class="headline">${inc.headline || ""}</p>
 
         <div class="metrics">
-          <div class="metric"><div class="label">Peak score</div><div class="val crit">${fmt.score(inc.peak_risk_score)}</div></div>
+          <div class="metric"><div class="label">Trough trust score</div><div class="val crit">${inc.peak_risk_score != null ? fmt.score(100 - inc.peak_risk_score) : "—"}</div></div>
           <div class="metric"><div class="label">Mark-oracle peak</div><div class="val warn">${fmt.pct(inc.peak_mark_oracle_spread_pct)}</div></div>
           <div class="metric"><div class="label">Oracle drift</div><div class="val warn">${fmt.pct(inc.peak_oracle_drift_pct)}</div></div>
           <div class="metric"><div class="label">Peak OI velocity 1h</div><div class="val warn">${fmt.pct(inc.peak_oi_velocity_1h, 0)}</div></div>
@@ -350,7 +364,7 @@ function renderIncident(inc) {
         </div>
 
         <div class="chart-wrap">
-          <div class="chart-wrap-head"><span>// risk score timeline</span><span>0–100 composite</span></div>
+          <div class="chart-wrap-head"><span>// trust score timeline</span><span>0–100 · lower = riskier</span></div>
           <div class="chart-container"><canvas id="chart-risk"></canvas></div>
         </div>
 
@@ -374,7 +388,9 @@ function renderIncident(inc) {
 
 function drawCharts(inc) {
   const labels = inc.series.map(p => fmt.time(p.ts));
-  const riskData = inc.series.map(p => p.risk_score);
+  // Plot trust (= 100 − risk) so the framing matches the rest of the site.
+  // The JELLY trough is now visually a "trust collapse" — same data, inverted axis.
+  const riskData = inc.series.map(p => Math.max(0, Math.min(100, 100 - (p.risk_score || 0))));
   const markData = inc.series.map(p => p.mark_px);
   const oracleData = inc.series.map(p => p.oracle_px);
 
@@ -400,7 +416,7 @@ function drawCharts(inc) {
   chartRisk = new Chart(ctx1, {
     type: "line",
     data: { labels, datasets: [
-      { label: "Risk score", data: riskData,
+      { label: "Trust score (lower = riskier)", data: riskData,
         borderColor: "#ff6b6b", backgroundColor: "rgba(255,107,107,0.18)",
         borderWidth: 2.5, fill: true, tension: 0.35, pointRadius: 0, pointHoverRadius: 5 }
     ]},

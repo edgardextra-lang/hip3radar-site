@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="fa010d59-5bcc-45e9-b7f1-5c2deb505015"></script>
+<script src="/favicon.js" defer></script>
 <style>
   :root{--accent:#7ef3a0;--accent-ink:#0b1510;--warn:#ffb648;--danger:#ff6b6b;--bg:#0a0c0b;--surface:#11140f;--surface-2:#161a13;--line:#1f2620;--line-2:#2a332b;--ink:#e8ece4;--ink-2:#a8b0a4;--ink-3:#6a7368;--sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;--serif:"Instrument Serif",serif}
   *{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}body{overflow-x:hidden}a{color:inherit;text-decoration:none}::selection{background:var(--accent);color:var(--accent-ink)}
@@ -22,7 +23,7 @@
   .nav-center a:hover{background:var(--surface);color:var(--ink)}
   .nav-center a.active{background:var(--surface-2);color:var(--ink)}
   .nav-right{display:flex;justify-content:flex-end;gap:10px}
-  .btn{font-family:var(--mono);font-size:12.5px;padding:9px 16px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink);transition:all 160ms}
+  .btn{font-family:var(--mono);font-size:12.5px;padding:9px 16px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink);transition:all 160ms;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;line-height:1}
   .btn:hover{border-color:var(--ink-2)}
   .btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
   main{max-width:880px;margin:0 auto}
@@ -42,22 +43,28 @@
   .release-pill.minor{background:rgba(168,176,164,0.08);color:var(--ink-2);border-color:var(--line-2)}
   .release-pill.major{background:rgba(255,182,72,0.14);color:var(--warn);border-color:rgba(255,182,72,0.3)}
   .release ul{list-style:none;padding:0;margin:0}
-  .release li{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:9px 0;font-size:14.5px;color:var(--ink-2);line-height:1.55}
-  .release li::before{content:"+";color:var(--accent);font-weight:600;font-family:var(--mono)}
-  .release li.fix::before{content:"·";color:var(--warn)}
+  .release li{display:grid;grid-template-columns:18px 1fr;gap:14px;padding:11px 0;font-size:15px;color:var(--ink-2);line-height:1.65;max-width:64ch}
+  .release li + li{border-top:1px solid rgba(31,38,32,0.4)}
+  .release li::before{content:"+";color:var(--accent);font-weight:600;font-family:var(--mono);font-size:13px;line-height:1.7}
+  .release li.fix::before{content:"~";color:var(--warn)}
   .release li.remove::before{content:"−";color:var(--danger)}
   .release li b{color:var(--ink);font-weight:500}
+  .release li code{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--surface);padding:1px 6px;border-radius:3px;border:1px solid var(--line);white-space:nowrap}
+  .release li .sub{display:block;color:var(--ink-3);font-size:13px;margin-top:4px;line-height:1.55}
   footer{border-top:1px solid var(--line);padding:28px 56px;color:var(--ink-3);font-family:var(--mono);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
-  @media (max-width:680px){.nav-center{display:none}.hero,.body-wrap{padding:32px 22px}h1{font-size:28px}footer{padding:20px 22px}}
+  @media (max-width:680px){.nav-center{display:none}.nav{padding:12px 16px;grid-template-columns:1fr auto}.brand b{font-size:13px}.nav-right{gap:8px}.nav-right .btn{padding:8px 12px;font-size:11.5px}.hero,.body-wrap{padding:32px 18px}h1{font-size:28px;line-height:1.05}.lead{font-size:14.5px}.release{padding:22px 0}.release-head{gap:10px;row-gap:6px}.release-head h2{font-size:19px;width:100%}.release li{font-size:14px;line-height:1.6}.release li .sub{font-size:12.5px}.release li code{font-size:11.5px}footer{padding:20px 18px;flex-direction:column;align-items:flex-start;gap:8px}}
+  @media (max-width:480px){.nav-right .btn-primary{display:none}h1{font-size:24px}.release-head h2{font-size:17px}}
 </style>
 </head>
 <body>
 <nav class="nav">
   <a href="/" class="brand"><div class="brand-mark"></div><b>HIP3Radar</b></a>
   <div class="nav-center">
-    <a href="/#scoreboard">Scoreboard</a><a href="/#badge">Badge</a><a href="/#methodology">Methodology</a>
-    <a href="/incidents">Incidents</a><a href="/#alerts">Alerts</a><a href="/docs">Docs</a>
-    <a href="/#pricing">Pricing</a><a href="/changelog" class="active">Changelog</a>
+    <a href="/#scoreboard">Scoreboard</a>
+    <a href="/#badge">Badge</a>
+    <a href="/#methodology">Methodology</a>
+    <a href="/#alerts">Alerts</a>
+    <a href="/#pricing">Pricing</a>
   </div>
   <div class="nav-right">
     <a class="btn" href="https://t.me/hip3radar_alerts_bot" target="_blank" rel="noopener">Get alerts</a>
@@ -74,23 +81,56 @@
 
     <div class="release">
       <div class="release-head">
-        <h2>v0.4 — Trust infrastructure</h2>
+        <h2>v0.6 — Trust-score reframe</h2>
+        <span class="release-tag">2026-04-19</span>
+        <span class="release-pill major">major</span>
+      </div>
+      <ul>
+        <li><b>Single mental model: higher = safer.</b><span class="sub">Every user-facing surface now leads with <code>trust_score</code> (0–100, higher is safer) instead of the inverted risk score. Letter grades unchanged: AA → F.</span></li>
+        <li><b>Sortable scoreboard.</b><span class="sub">Every column on the live scoreboard is now click-to-sort (asc/desc) except <em>Market</em> and <em>Dex</em>. Default load: lowest-trust first (riskiest at top).</span></li>
+        <li><b>API: <code>trust_score</code> sibling field.</b><span class="sub">All market endpoints now return both <code>trust_score</code> and <code>risk_score</code>. <code>risk_score</code> is preserved for backwards compat — marked deprecated, scheduled for removal in v1.0.</span></li>
+        <li><b>Telegram bot migrated.</b><span class="sub">Alert messages, <code>/threshold</code>, <code>/help</code>, and onboarding flow all converted to trust units. Existing subscriber thresholds auto-migrated (<code>trust = 100 − risk</code>) so alerts fire at the same trigger moments as before.</span></li>
+        <li><b>Per-market and per-deployer pages.</b><span class="sub">Headline metric, badge label, chart axis and legend all use trust framing. Composite chart now shows trust trending up as a "good" signal.</span></li>
+        <li><b>JELLY incident chart inverted.</b><span class="sub">Plotted as a trust-collapse trough instead of a risk spike. Same data, framing matches the rest of the site.</span></li>
+        <li><b>Header cleanup.</b><span class="sub">Removed redundant "API docs" CTA from the hero — moved into footer + <code>/api-key</code> page only.</span></li>
+        <li class="fix"><b>Mobile fix: HIP-3 chip on one line.</b><span class="sub">Hero badge no longer wraps "HIP-3" to two lines on small viewports.</span></li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="release-head">
+        <h2>v0.5 — SEO &amp; live data</h2>
         <span class="release-tag">2026-04-18</span>
         <span class="release-pill major">major</span>
       </div>
       <ul>
-        <li><b>New design system.</b> Bloomberg-terminal aesthetic. Geist Mono throughout. Green accent (#7ef3a0) replaces pink.</li>
-        <li><b>Per-deployer scorecard pages</b> at <code>/deployer/&lt;slug&gt;</code> — aggregate grade, market table, embed snippet, "Get Verified" CTA.</li>
-        <li><b>Per-market detail pages</b> at <code>/market/&lt;dex&gt;/&lt;coin&gt;</code> — full scorecard, 24h history chart, signal breakdown.</li>
-        <li><b>Embeddable badge widget</b> via <code>/badge.js</code> — drop the <code>&lt;hip3radar-badge&gt;</code> element on any market page.</li>
-        <li><b>Letter grades</b> (AA / A / B+ / B / C / D / F) computed from composite risk score on every market.</li>
-        <li><b>Verified Deployer</b> tier ($2,500+/mo) replaces generic Enterprise — badge embed rights, custom oracle integration, dedicated incident response.</li>
-        <li><b>Status page</b> at <code>/status</code> — live health for polling, bot, API, tunnel, email.</li>
-        <li><b>OpenAPI 3.1 spec</b> at <code>/openapi.json</code>. Interactive docs at <code>/docs</code>.</li>
-        <li><b>Animated GIF favicon</b> with radar sweep.</li>
-        <li><b>Search + dex filter</b> on the live scoreboard.</li>
-        <li class="fix">Pricing rebalanced: Pro $29 → $49, Team $199 → $499, Enterprise → Verified Deployer $2,500+.</li>
-        <li class="remove">Sticky bottom Telegram CTA removed (moved to hero).</li>
+        <li><b>Live markets data everywhere.</b><span class="sub">Ticker tape, radar blips, and aggregate volume chart now stream from <code>/hip3radar/api/all</code> on a 60-second loop. No more placeholder values.</span></li>
+        <li><b>Per-market SEO landing pages.</b><span class="sub">All 325 markets at <code>/market/&lt;dex&gt;/&lt;coin&gt;</code> now ship JSON-LD <em>Dataset</em> + <em>BreadcrumbList</em> schema, related-market grids, and keyword-rich meta descriptions.</span></li>
+        <li><b>IndexNow integration.</b><span class="sub">Push the full sitemap to Bing, Yandex, and ChatGPT in one POST. Google + Bing sitemap pings on the same endpoint.</span></li>
+        <li><b>Umami event tracking.</b><span class="sub">Telegram clicks, scoreboard filters, market navigations, scroll depth, and pricing-CTA clicks — all tagged.</span></li>
+        <li><b>Shared animated favicon.</b><span class="sub">Single <code>/favicon.js</code> renders a 32-frame radar sweep on every page (Chrome dropped GIF favicon animation in 2017).</span></li>
+        <li><b>Tighter navigation.</b><span class="sub">Header trimmed to five primary anchors. Secondary pages reachable from footer or scoreboard.</span></li>
+      </ul>
+    </div>
+
+    <div class="release">
+      <div class="release-head">
+        <h2>v0.4 — Trust infrastructure</h2>
+        <span class="release-tag">2026-04-17</span>
+        <span class="release-pill major">major</span>
+      </div>
+      <ul>
+        <li><b>New design system.</b><span class="sub">Bloomberg-terminal aesthetic — Geist Mono throughout, green accent <code>#7ef3a0</code> replaces the original pink.</span></li>
+        <li><b>Per-deployer scorecards.</b><span class="sub">Aggregate grade, market table, embed snippet, and "Get Verified" CTA at <code>/deployer/&lt;slug&gt;</code>.</span></li>
+        <li><b>Per-market detail pages.</b><span class="sub">Full scorecard, 24h history chart, and signal breakdown at <code>/market/&lt;dex&gt;/&lt;coin&gt;</code>.</span></li>
+        <li><b>Embeddable badge widget.</b><span class="sub">Drop <code>&lt;hip3radar-badge&gt;</code> on any market page — script self-mounts via <code>/badge.js</code>.</span></li>
+        <li><b>Letter grades.</b><span class="sub">AA / A / B+ / B / C / D / F derived from the composite trust score, applied to every market.</span></li>
+        <li><b>Verified Deployer tier.</b><span class="sub">Replaces the generic Enterprise plan — badge-embed rights, custom oracle integration, dedicated incident response. Floor $2,500/mo.</span></li>
+        <li><b>Status page.</b><span class="sub">Live health for polling, alert bot, API, tunnel, and email at <code>/status</code>.</span></li>
+        <li><b>OpenAPI 3.1 spec.</b><span class="sub">Machine-readable contract at <code>/openapi.json</code>. Interactive docs at <code>/docs</code>.</span></li>
+        <li><b>Search and dex filter.</b><span class="sub">Live scoreboard now supports text search and 7-category filtering.</span></li>
+        <li class="fix"><b>Pricing rebalanced.</b><span class="sub">Pro $29 → $49 · Team $199 → $499 · Enterprise → Verified Deployer $2,500+.</span></li>
+        <li class="remove"><b>Sticky bottom Telegram CTA removed.</b><span class="sub">Moved into the hero so it never blocks the scoreboard.</span></li>
       </ul>
     </div>
 
@@ -101,29 +141,29 @@
         <span class="release-pill">minor</span>
       </div>
       <ul>
-        <li><b>Telegram alert bot</b> live at <code>@hip3radar_alerts_bot</code> — multi-user, custom thresholds, dex filter, 6h dedup per market.</li>
-        <li>Slash commands: <code>/start</code>, <code>/subscribe</code>, <code>/list</code>, <code>/unsubscribe</code>, <code>/threshold</code>, <code>/dex</code>, <code>/help</code>.</li>
-        <li>Inline-button onboarding (Warning 40+ / Critical 60+ presets).</li>
-        <li>Free during public beta. Telegram chat IDs stored in SQLite, deduped on insert.</li>
-        <li>Mobile optimization across all pages (480px + 360px breakpoints, 44px tap targets).</li>
+        <li><b>Alert bot live.</b><span class="sub"><code>@hip3radar_alerts_bot</code> — multi-user, custom thresholds, dex-level filtering, 6-hour dedup per market.</span></li>
+        <li><b>Seven slash commands.</b><span class="sub"><code>/start</code> · <code>/subscribe</code> · <code>/list</code> · <code>/unsubscribe</code> · <code>/threshold</code> · <code>/dex</code> · <code>/help</code>.</span></li>
+        <li><b>One-tap onboarding.</b><span class="sub">Inline buttons preset Warning (40+) and Critical (60+) thresholds.</span></li>
+        <li><b>Free during public beta.</b><span class="sub">Chat IDs stored in SQLite, deduped on insert. No signup, no email.</span></li>
+        <li><b>Mobile-first polish.</b><span class="sub">480px + 360px breakpoints, 44px minimum tap targets, no layout shift.</span></li>
       </ul>
     </div>
 
     <div class="release">
       <div class="release-head">
-        <h2>v0.2 — Distribution + SEO</h2>
+        <h2>v0.2 — Distribution and SEO</h2>
         <span class="release-tag">2026-04-16</span>
         <span class="release-pill">minor</span>
       </div>
       <ul>
-        <li><b>Domain</b> hip3radar.xyz live via named Cloudflare Tunnel with auto-TLS.</li>
-        <li><b>Custom domain email</b> on hip3radar.xyz with SPF + DKIM + DMARC alignment via Resend + Cloudflare Email Routing.</li>
-        <li><b>Dual-mode confirmation emails</b>: instant plain-text "you're on the list" + scheduled rich HTML follow-up.</li>
-        <li><b>llms.txt + llms-full.txt</b> for LLM agent discovery.</li>
-        <li><b>Dynamic sitemap.xml</b> (330+ URLs including every market and incident).</li>
-        <li>JSON-LD structured data (Organization, SoftwareApplication, FAQPage) for rich search results.</li>
-        <li>Explicit allow rules for GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, etc.</li>
-        <li>OG link preview cards across iMessage / Telegram / Slack / Discord / Twitter.</li>
+        <li><b>Custom domain live.</b><span class="sub"><code>hip3radar.xyz</code> served via named Cloudflare Tunnel with automatic TLS.</span></li>
+        <li><b>Authenticated email.</b><span class="sub">SPF + DKIM + DMARC alignment via Resend and Cloudflare Email Routing.</span></li>
+        <li><b>Dual-mode confirmations.</b><span class="sub">Instant plain-text "you're on the list" plus a scheduled rich-HTML follow-up.</span></li>
+        <li><b>LLM-agent discovery.</b><span class="sub"><code>llms.txt</code> + <code>llms-full.txt</code> exposed at the root.</span></li>
+        <li><b>Dynamic sitemap.</b><span class="sub">330+ URLs including every market and incident, regenerated on every request.</span></li>
+        <li><b>JSON-LD structured data.</b><span class="sub">Organization, SoftwareApplication, FAQPage — for rich search results.</span></li>
+        <li><b>Crawler allow-list.</b><span class="sub">Explicit allow for GPTBot, ChatGPT-User, ClaudeBot, PerplexityBot, and others.</span></li>
+        <li><b>Universal link previews.</b><span class="sub">OG cards render across iMessage, Telegram, Slack, Discord, and Twitter.</span></li>
       </ul>
     </div>
 
@@ -134,14 +174,14 @@
         <span class="release-pill">minor</span>
       </div>
       <ul>
-        <li><b>Risk surveillance engine</b> for every Hyperliquid native + HIP-3 perp market.</li>
-        <li>Polls 325+ markets across 9 dexes every 60 seconds.</li>
-        <li>5-signal composite scoring: oracle drift vs CEX consensus, mark-oracle spread, OI velocity (1h + 24h), OI/volume ratio, funding extremity.</li>
-        <li>Public CORS-enabled JSON API at <code>/hip3radar/api/state</code> &amp; <code>/api/all</code>.</li>
-        <li>JELLY incident replay at <code>/incidents</code> with minute-by-minute Chart.js visualization.</li>
-        <li>Pricing page with waitlist (Supabase + EmailJS).</li>
-        <li>Twitter banner, OG image, profile pic — full brand kit.</li>
-        <li>Watchdog auto-restart for 24/7 uptime across polling service, public Flask app, Telegram bot, named Cloudflare tunnel.</li>
+        <li><b>Risk surveillance engine.</b><span class="sub">Every Hyperliquid native + HIP-3 perpetual market, monitored continuously.</span></li>
+        <li><b>325+ markets across 9 dexes.</b><span class="sub">Polled every 60 seconds.</span></li>
+        <li><b>5-signal composite scoring.</b><span class="sub">Oracle drift vs CEX consensus · mark-oracle spread · OI velocity (1h + 24h) · OI/volume ratio · funding extremity.</span></li>
+        <li><b>Public CORS API.</b><span class="sub"><code>/hip3radar/api/state</code> for top-25 risk · <code>/hip3radar/api/all</code> for the full snapshot.</span></li>
+        <li><b>JELLY incident replay.</b><span class="sub">Minute-by-minute Chart.js visualization at <code>/incidents</code>.</span></li>
+        <li><b>Waitlist pipeline.</b><span class="sub">Supabase + EmailJS, with a per-tier modal on the pricing section.</span></li>
+        <li><b>Brand kit.</b><span class="sub">Twitter banner, OG image, profile picture — all generated from a shared green palette.</span></li>
+        <li><b>24/7 watchdog.</b><span class="sub">Auto-restart across polling service, public Flask app, Telegram bot, and named Cloudflare tunnel.</span></li>
       </ul>
     </div>
 

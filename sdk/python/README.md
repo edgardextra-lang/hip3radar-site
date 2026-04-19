@@ -14,11 +14,13 @@ from hip3radar import HIP3Radar, safety_grade
 # Free public tier — no key needed
 client = HIP3Radar()
 
-# Top 25 highest-risk markets
+# Top 25 markets by lowest trust score (riskiest first)
 state = client.state()
 for m in state["top_risk"]:
-    grade = safety_grade(m["risk_score"])
-    print(f"{m['name']:25s} {grade['grade']:3s} ({grade['rating']:5.1f}/100)")
+    # Every market dict carries `trust_score` (canonical, higher = safer).
+    # `risk_score` is preserved for backwards compat (deprecated, will be removed in v1.0).
+    grade = safety_grade(m["risk_score"])  # safety_grade still accepts the raw risk score
+    print(f"{m['name']:25s} {grade['grade']:3s} (trust {m['trust_score']:5.1f}/100)")
 
 # Full snapshot — every market across every dex
 snap = client.all_markets()
